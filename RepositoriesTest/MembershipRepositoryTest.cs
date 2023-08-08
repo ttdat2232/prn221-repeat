@@ -52,7 +52,7 @@ namespace RepositoriesTest
                 Assert.That(added.Id == 11);
                 Assert.That(added.ClubId == 1);
                 Assert.That(added.StudentId == 1);
-            }); 
-        } 
+            });
+        }
     }
 }

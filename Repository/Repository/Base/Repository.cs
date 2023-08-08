@@ -66,10 +66,10 @@ namespace Repositories.Repository.Base
             return paginationResult;
         }
 
-        public virtual Task<T> UpdateAsync(T entity)
+        public virtual T UpdateAsync(T entity)
         {
             context.Entry(entity).State = EntityState.Modified;
-            return Task.FromResult(entity);
+            return entity;
         }
     }
 }

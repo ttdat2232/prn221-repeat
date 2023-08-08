@@ -79,5 +79,17 @@ namespace RepositoriesTest
         {
             return $"expected is {expected} but actual is {actual}";
         }
+
+        [Test]
+        public async Task Should_assert_true_when_update_student()
+        {
+            var studentToUpdate = await context.Set<Student>().Where(m => m.Id == 1).FirstOrDefaultAsync() ?? throw new KeyNotFoundException("Cannot found");
+            var newName = "Test name change";
+            studentToUpdate.Name = newName;
+            context.ChangeTracker.Clear();
+            var updated = studentRepository.UpdateAsync(studentToUpdate);
+            var changes = await context.SaveChangesAsync();
+            Assert.That(changes > 0, () => Notification(">1", changes));
+        }
     }
 }

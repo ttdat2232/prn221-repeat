@@ -22,7 +22,7 @@ namespace Domain.Interfaces.Repositories.Base
             );
         Task<int> CountAsync(Expression<Func<T, bool>> expression = null);
         Task<T> AddAsync(T entity);
-        Task<T> UpdateAsync(T entity);
+        T UpdateAsync(T entity);
         Task DeleteAsync(T entity);
     }
 }
