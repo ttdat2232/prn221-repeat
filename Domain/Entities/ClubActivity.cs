@@ -14,7 +14,7 @@ namespace Domain.Entities
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
         public virtual Club? Club { get; set; }
-        public virtual ICollection<Participant> Participants { get; set; }
+        public virtual ICollection<Participant>? Participants { get; set; }
     }
 
     public enum ActivityStatus

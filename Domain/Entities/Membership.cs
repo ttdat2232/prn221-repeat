@@ -11,16 +11,25 @@ namespace Domain.Entities
 {
     public class Membership
     {
-        public DateOnly JoinDate { get; set; }
-        public DateOnly LeaveDate { get; set; }
+        [Key]
+        public long Id { get; set; }
+        public DateTime JoinDate { get; set; }
+        public DateTime? LeaveDate { get; set; }
         public MemberStatus Status { get; set; }
         public MemberRole Role { get; set; }
-        [Key, Column(Order = 0)]
-        public long ClubId { get; set; }
-        [Key, Column(Order = 1)]
+        public long? ClubId { get; set; }
         public long StudentId { get; set; }
         public virtual Club? Club { get; set; }
         public virtual Student? Student { get; set; }
+        public virtual ICollection<ClubBoard>? ClubBoards { get; set; }
+        public virtual ICollection<Participant>? ParticipatedActivities { get; set; }
+        public Membership() { }
+        public Membership(long clubId, long studentId) 
+        {
+            Id = long.Parse(clubId + "" + studentId);
+            ClubId = clubId;
+            StudentId = studentId;
+        }
     }
     
     public enum MemberStatus

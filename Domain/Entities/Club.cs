@@ -12,8 +12,10 @@ namespace Domain.Entities
     {
         [Column(TypeName = "nvarchar(50)")]
         public string Name { get; set; }
-        public DateOnly CreateAt { get; set; }
+        public DateTime CreateAt { get; set; }
+        public string LogoUrl { get; set; }
         public virtual ICollection<Membership>? Memberships { get; set; }
         public virtual ICollection<ClubActivity>? ClubActivities { get; set; }
+        public virtual ICollection<ClubBoard>? ClubBoards { get; set; }
     }
 }

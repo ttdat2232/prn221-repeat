@@ -13,15 +13,18 @@ namespace Domain.Entities
     {
         [Column (TypeName = "nvarchar(100)")]
         public string Name { get; set; }
-        public DateOnly DateOfBirth { get; set; }
+        public DateTime Birthday { get; set; }
+        public StudentStatus Status { get; set; }
         public long MajorId { get; set; }
+        public string GradeId { get; set; }
         public virtual Major? Major { get; set; }
-        public virtual ICollection<Participant>? ParticipatedActivity { get; set; }
-        public virtual ICollection<Membership> Memberships { get; set; }
+        public virtual Grade? Grade { get; set; }   
+        public virtual ICollection<Membership>? Memberships { get; set; }
     }
 
     public enum StudentStatus
     {
-
+        IN_PROGRESS = 0,
+        FINISH = 1,
     }
 }
