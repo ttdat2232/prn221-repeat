@@ -19,24 +19,24 @@ namespace Repositories.Repository.Base
             this.context = context;
         }
 
-        public async Task<T> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
             var result = await context.AddAsync(entity);
             return result.Entity;
         }
 
-        public async Task<int> CountAsync(Expression<Func<T, bool>> expression = null)
+        public virtual async Task<int> CountAsync(Expression<Func<T, bool>> expression = null)
         {
             return expression == null ? await context.Set<T>().CountAsync() : await context.Set<T>().Where(expression).CountAsync();
         }
 
-        public async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync(T entity)
         {
             entity = await context.Set<T>().FindAsync(entity) ?? throw new KeyNotFoundException("Not found");
             context.Entry(entity).State = EntityState.Deleted;
         }
 
-        public async Task<PaginationResult<T>> GetAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string[] include = null, bool isTakeAll = false, bool isDisableTracking = true, int pageIndex = 0, int pageSize = 0)
+        public virtual async Task<PaginationResult<T>> GetAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string[] include = null, bool isTakeAll = false, bool isDisableTracking = true, int pageIndex = 0, int pageSize = 0)
         {
             IQueryable<T> query = context.Set<T>();
             var paginationResult = new PaginationResult<T>();
@@ -66,13 +66,9 @@ namespace Repositories.Repository.Base
             return paginationResult;
         }
 
-        public Task<T> UpdateAsync(T entity)
+        public virtual Task<T> UpdateAsync(T entity)
         {
-            if(context.Entry(entity).State == EntityState.Detached)
-            {
-                context.Attach(entity);
-                context.Entry(entity).State = EntityState.Modified;
-            }
+            context.Entry(entity).State = EntityState.Modified;
             return Task.FromResult(entity);
         }
     }

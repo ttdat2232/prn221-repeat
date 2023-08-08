@@ -11,6 +11,11 @@ namespace Repository.Models
 {
     public class ClubMembershipContext : DbContext
     {
+        private bool isUseInMemories = false;
+        public ClubMembershipContext(bool isUseInMemories = false) 
+        { 
+            this.isUseInMemories = isUseInMemories;
+        }
         private string GetConnectionString()
         {
             var config = new ConfigurationBuilder()
@@ -21,7 +26,10 @@ namespace Repository.Models
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(GetConnectionString());
+            if(!isUseInMemories)
+                optionsBuilder.UseSqlServer(GetConnectionString());
+            else 
+                optionsBuilder.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString("N"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
