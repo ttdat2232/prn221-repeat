@@ -36,7 +36,7 @@ namespace Repositories.Repository.Base
             context.Entry(entity).State = EntityState.Deleted;
         }
 
-        public virtual async Task<PaginationResult<T>> GetAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string[] include = null, bool isTakeAll = false, bool isDisableTracking = true, int pageIndex = 0, int pageSize = 0)
+        public virtual async Task<PaginationResult<T>> GetAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string[] include = null, bool isTakeAll = false, bool isDisableTracking = true, int pageIndex = 0, int pageSize = 4)
         {
             IQueryable<T> query = context.Set<T>();
             var paginationResult = new PaginationResult<T>();
@@ -63,6 +63,9 @@ namespace Repositories.Repository.Base
                 else
                     paginationResult.Values = await orderBy(query).Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
             }
+            paginationResult.TotalPages = (int)Math.Ceiling((float)paginationResult.TotalCount / pageSize);
+            paginationResult.PageCount = pageIndex + 1;
+            paginationResult.PageIndex = pageIndex;
             return paginationResult;
         }
 

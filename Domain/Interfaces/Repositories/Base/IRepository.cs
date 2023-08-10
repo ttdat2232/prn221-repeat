@@ -18,7 +18,7 @@ namespace Domain.Interfaces.Repositories.Base
                 bool isTakeAll = false,
                 bool isDisableTracking = true,
                 int pageIndex = 0,
-                int pageSize = 0
+                int pageSize = 4
             );
         Task<int> CountAsync(Expression<Func<T, bool>> expression = null);
         Task<T> AddAsync(T entity);

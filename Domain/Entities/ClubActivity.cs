@@ -10,6 +10,7 @@ namespace Domain.Entities
     public class ClubActivity : BaseEntity
     {
         public long? ClubId { get; set; }
+        public string Name { get; set; }
         public ActivityStatus Status { get; set;}
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }

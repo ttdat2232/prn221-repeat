@@ -1,8 +1,12 @@
+using Domain.Interfaces.Repositories;
+using Repositories.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSession(opts => opts.IdleTimeout = TimeSpan.FromMinutes(30));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
