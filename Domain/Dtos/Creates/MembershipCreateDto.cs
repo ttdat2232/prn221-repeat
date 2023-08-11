@@ -12,7 +12,7 @@ namespace Domain.Dtos.Creates
     {
         public long StudentId { get; set; }
         public long ClubId { get; set; }
-        public long[]? ClubBoardId { get; set; }
+        public List<long>? ClubBoardIds { get; set; }
         public MemberRole Role { get; set; }
     }
 }

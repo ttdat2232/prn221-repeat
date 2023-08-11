@@ -5,6 +5,7 @@ using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -26,17 +27,12 @@ namespace Application.Converters
 
         public static Membership ToEntity(MembershipCreateDto dto)
         {
-            var clubBoards = new List<ClubBoard>();
-            if (dto.ClubBoardId != null && dto.ClubBoardId.Length > 0)
-                foreach (var item in dto.ClubBoardId)
-                    clubBoards.Add(new ClubBoard() { Id = item });
             var membership = new Membership(studentId: dto.StudentId, clubId: dto.ClubId)
             {
                 JoinDate = DateTime.Now,
                 Role = dto.Role,
                 Status = MemberStatus.JOIN,
             };
-            membership.ClubBoards = clubBoards;
             return membership;
         }
 
@@ -47,6 +43,43 @@ namespace Application.Converters
             entity.LeaveDate = dto.LeaveDate.HasValue ? dto.LeaveDate.Value : entity.LeaveDate;
             entity.Status = dto.MemberStatus.HasValue ? dto.MemberStatus.Value : entity.Status;
             entity.Role = dto.Role.HasValue ? dto.Role.Value : entity.Role;
+        }
+
+        public static ClubDto ToDto(Club entity)
+        {
+            var clubBoards = new List<ClubBoardDto>();
+            if(entity.ClubBoards != null && entity.ClubBoards.Count > 0)
+            {
+                clubBoards.AddRange(entity.ClubBoards.Select(cb => ToDto(cb)));
+            }
+            return new ClubDto
+            {
+                Id = entity.Id,
+                CreateAt = entity.CreateAt,
+                LogoUrl = entity.LogoUrl,
+                Name = entity.Name,
+                ClubBoardIds = clubBoards.Select(cb => cb.Id).ToList(),
+                ClubBoards = clubBoards
+            };
+        }
+
+        public static ClubBoardDto ToDto(ClubBoard entity)
+        {
+            return new ClubBoardDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                ClubId = entity.ClubId,
+            };
+        }
+
+        public static StudentDto ToDto(Student entity)
+        {
+            return new StudentDto
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+            };
         }
     }
 }

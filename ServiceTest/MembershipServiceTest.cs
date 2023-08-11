@@ -1,6 +1,7 @@
 using Application.Exceptions;
 using Application.Services;
 using Domain.Dtos.Creates;
+using Domain.Dtos.Updates;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
@@ -96,5 +97,46 @@ namespace ServiceTest
         {
             Assert.ThrowsAsync<AppException>(async () => await membershipService.GetMemberShipByIdAsync(id, status));
         }
+
+        [Test, Category("Update")]
+        public async Task Should_assert_true_when_update_member()
+        {
+            var id = 12;
+            var date = DateTime.Now.AddDays(1);
+            var memberToUpdate = new MembershipUpdateDto
+            {
+                Id = id,
+                JoinDate = date,
+                LeaveDate = date,
+                MemberStatus = MemberStatus.LEAVE
+            };
+            var result = await membershipService.UpdateMembershipAsync(memberToUpdate);
+            var updated = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id).ContinueWith(t => t.Result.Values.Single());
+            Assert.Multiple(() => 
+            {
+                Assert.That(updated.JoinDate == date);
+                Assert.That(updated.LeaveDate == date);
+                Assert.That(updated.LeaveDate == date);
+                Assert.That(updated.Status == MemberStatus.LEAVE);
+            });
+        }
+        [Test, Category("Update")]
+        public void Should_throw_AppException_when_update_not_exist_member()
+        {
+            var memberToUpdate = new MembershipUpdateDto
+            {
+                Id = 1000
+            };
+            Assert.ThrowsAsync<AppException>(async () => await membershipService.UpdateMembershipAsync(memberToUpdate));
+        }
+        [Test, Category("Delete")]
+        public async Task Should_return_true_when_delete_member()
+        {
+            var id = 13;
+            await membershipService.DeleteMembershipAsync(id);
+            bool mustBeDeleted = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id).ContinueWith(t => t.Result.Values.Count == 0);
+            Assert.IsTrue(mustBeDeleted);
+        }
+
     }
 }

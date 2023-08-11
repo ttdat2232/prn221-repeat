@@ -15,5 +15,18 @@ namespace Repositories.Repository
         public MembershipRepository(DbContext context) : base(context)
         {
         }
+
+        public override async Task<Membership> AddAsync(Membership entity)
+        {
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT Memberships ON");
+                await context.AddAsync(entity);
+                await context.SaveChangesAsync();
+                await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT Memberships OFF");
+                await transaction.CommitAsync();
+                return entity;
+            }
+        }
     }
 }

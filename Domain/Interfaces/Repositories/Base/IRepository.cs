@@ -24,5 +24,6 @@ namespace Domain.Interfaces.Repositories.Base
         Task<T> AddAsync(T entity);
         T UpdateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task DeleteAsync(object id);
     }
 }

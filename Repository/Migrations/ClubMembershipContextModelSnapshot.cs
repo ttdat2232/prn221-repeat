@@ -34,7 +34,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("MembershipsId");
 
-                    b.ToTable("ClubBoardMembership");
+                    b.ToTable("ClubBoardMembership", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Club", b =>
@@ -58,7 +58,7 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clubs");
+                    b.ToTable("Clubs", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.ClubActivity", b =>
@@ -89,7 +89,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ClubId");
 
-                    b.ToTable("ClubActivities");
+                    b.ToTable("ClubActivities", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.ClubBoard", b =>
@@ -111,7 +111,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("ClubId");
 
-                    b.ToTable("ClubBoards");
+                    b.ToTable("ClubBoards", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Grade", b =>
@@ -124,7 +124,7 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Grades");
+                    b.ToTable("Grades", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Major", b =>
@@ -141,7 +141,7 @@ namespace Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Majors");
+                    b.ToTable("Majors", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Membership", b =>
@@ -176,7 +176,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Memberships");
+                    b.ToTable("Memberships", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Participant", b =>
@@ -194,7 +194,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("MembershipId");
 
-                    b.ToTable("Participants");
+                    b.ToTable("Participants", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Student", b =>
@@ -228,7 +228,7 @@ namespace Repositories.Migrations
 
                     b.HasIndex("MajorId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("ClubBoardMembership", b =>

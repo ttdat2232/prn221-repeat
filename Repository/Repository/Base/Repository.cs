@@ -36,13 +36,19 @@ namespace Repositories.Repository.Base
             context.Entry(entity).State = EntityState.Deleted;
         }
 
+        public async Task DeleteAsync(object id)
+        {
+            var entity = await context.Set<T>().FindAsync(id) ?? throw new KeyNotFoundException("Not found");
+            context.Entry(entity).State = EntityState.Deleted;
+        }
+
         public virtual async Task<PaginationResult<T>> GetAsync(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string[] include = null, bool isTakeAll = false, bool isDisableTracking = true, int pageIndex = 0, int pageSize = 4)
         {
             IQueryable<T> query = context.Set<T>();
             var paginationResult = new PaginationResult<T>();
             paginationResult.TotalCount = await CountAsync(expression);
             if (expression != null)
-                query = query.Where(expression);
+                    query = query.Where(expression);
             if(isDisableTracking is true)
                 query = query.AsNoTracking();
             if (include != null && include.Length > 0)
@@ -71,6 +77,7 @@ namespace Repositories.Repository.Base
 
         public virtual T UpdateAsync(T entity)
         {
+            context.ChangeTracker.Clear();
             context.Entry(entity).State = EntityState.Modified;
             return entity;
         }

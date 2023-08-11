@@ -64,6 +64,12 @@ namespace ServiceTest
                 Status = MemberStatus.JOIN,
                 Role = MemberRole.MEMBER,
             });
+            await unitOfWork.Memberships.AddAsync(new Membership(1, 3)
+            {
+                JoinDate = DateTime.Now,
+                Status = MemberStatus.JOIN,
+                Role = MemberRole.MEMBER,
+            });
             await unitOfWork.CompleteAsync();
         }
     }

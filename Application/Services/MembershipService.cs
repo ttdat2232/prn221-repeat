@@ -32,21 +32,21 @@ namespace Application.Services
                 throw new AppException($"Member is already in this club");
             var club = await unitOfWork.Clubs
                 .GetAsync(expression: c => c.Id == membership.ClubId).ContinueWith(t => t.Result.Values.Count == 0 ? throw new AppException($"Not found club's Id {membership.ClubId}") : t.Result.Values.Single());
-            if(membership.ClubBoardId != null && membership.ClubBoardId.Length > 0)
+            var memberToAdd = AppConverter.ToEntity(membership);
+            memberToAdd.ClubBoards = new List<ClubBoard>();
+            if(membership.ClubBoardIds != null && membership.ClubBoardIds.Count > 0)
             {
-                foreach(var id in membership.ClubBoardId)
+                foreach(var id in membership.ClubBoardIds)
                 {
-                    var result = await unitOfWork.ClubBoards.GetAsync(expression: p => p.Id == id);
-                    if (result.Values.Count == 0)
-                        throw new AppException($"Not found clubBoard's Id {id}");
+                    var result = await unitOfWork.ClubBoards.GetAsync(expression: p => p.Id == id, include: new string[] {nameof(ClubBoard.Memberships)}, isDisableTracking: false)
+                        .ContinueWith(t => t.Result.Values.Count == 0 ? throw new AppException($"Not found clubBoard's Id {id}") : t.Result.Values.Single());
+                    result.Memberships?.Add(memberToAdd);
                 }
             }
-            var memberToAdd = AppConverter.ToEntity(membership);
             try
             {
                 memberToAdd = await unitOfWork.Memberships.AddAsync(memberToAdd);
-                var change = await unitOfWork.CompleteAsync();
-                return change > 0 ? AppConverter.ToDto(memberToAdd) : throw new AppException("Add new membership failed");
+                return AppConverter.ToDto(memberToAdd);
             } catch(Exception)
             {
                 throw new AppException("Add new membership failed");
@@ -57,7 +57,7 @@ namespace Application.Services
         {
             try
             {
-                await unitOfWork.Memberships.DeleteAsync(new Membership { Id = id });
+                await unitOfWork.Memberships.DeleteAsync(id: id);
                 if(await unitOfWork.CompleteAsync() <= 0)
                     throw new AppException("Deleted failed");
             }
@@ -69,7 +69,7 @@ namespace Application.Services
 
         public async Task<MembershipDto> GetMemberShipByIdAsync(long id, MemberStatus status = MemberStatus.JOIN)
         {
-            return await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id && m.Status == status, include: new string[] {nameof(Student), nameof(Club)})
+            return await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id && m.Status == status, include: new string[] {nameof(Membership.Student), nameof(Membership.Club)})
                 .ContinueWith(t => t.Result.Values.Count > 0 ? AppConverter.ToDto(t.Result.Values.Single()) : throw new AppException($"Not found membership's Id {id}"));
         }
 

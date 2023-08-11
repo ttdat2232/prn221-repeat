@@ -36,14 +36,6 @@ namespace Repository.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Participant>().HasKey(p => new { p.ClubActivityId, p.MembershipId });
-            //modelBuilder.Entity<Membership>()
-            //    .HasMany(ms => ms.ClubBoards)
-            //    .WithMany(cb => cb.Memberships)
-            //    .UsingEntity(
-            //    "MemberShipClubBoard",
-            //    l => l.HasOne(typeof(ClubBoard)).WithMany().HasForeignKey("ClubBoardId").HasPrincipalKey(nameof(ClubBoard.Id)),
-            //    r => r.HasOne(typeof(Membership)).WithMany().HasForeignKey("MembershipId").HasPrincipalKey(nameof(Membership.Id)),
-            //    j => j.HasKey("MembershipId", "ClubBoardId"));
         }
 
         public virtual DbSet<Major>? Majors { get; set; }
