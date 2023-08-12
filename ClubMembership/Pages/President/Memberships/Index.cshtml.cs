@@ -22,13 +22,14 @@ namespace ClubMembership.Pages.President.Memberships
             this.membershipService = membershipService;
         }
 
-        public IList<MembershipDto> Membership { get;set; } = new List<MembershipDto>();
+        public IList<MembershipDto> Membership {  get;set; } = new List<MembershipDto>();
         public PaginationResult<MembershipDto> PaginationResult { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             PaginationResult = await membershipService.GetMembershipByNameAsync();
             Membership = PaginationResult.Values;
+            return Page();
         }
     }
 }

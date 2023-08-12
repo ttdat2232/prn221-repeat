@@ -16,13 +16,19 @@ namespace Application.Converters
     {
         public static MembershipDto ToDto(Membership entity)
         {
-            return new MembershipDto
+            var result = new MembershipDto
             {
                 Id = entity.Id,
                 ClubName = entity.Club?.Name ?? "",
                 Name = entity.Student?.Name ?? "",
-                StudentId = entity.StudentId
+                StudentId = entity.StudentId,
+                Status = entity.Status,
+                JoinDate = entity.JoinDate,
+                Role = entity.Role
             };
+            if(entity.LeaveDate.HasValue)
+                result.JoinDate = entity.LeaveDate.Value;
+            return result;
         }
 
         public static Membership ToEntity(MembershipCreateDto dto)
@@ -41,7 +47,7 @@ namespace Application.Converters
             entity.Id = dto.Id;
             entity.JoinDate = dto.JoinDate.HasValue ? dto.JoinDate.Value : entity.JoinDate;
             entity.LeaveDate = dto.LeaveDate.HasValue ? dto.LeaveDate.Value : entity.LeaveDate;
-            entity.Status = dto.MemberStatus.HasValue ? dto.MemberStatus.Value : entity.Status;
+            entity.Status = dto.Status.HasValue ? dto.Status.Value : entity.Status;
             entity.Role = dto.Role.HasValue ? dto.Role.Value : entity.Role;
         }
 

@@ -52,7 +52,9 @@ namespace ClubMembership.Pages.President.Memberships
             Membership.ClubBoardIds = CheckedClubBoards;
             if(ModelState.IsValid)
             {
-                await membershipService.AddMemberShipAsync(Membership);
+                var result = await membershipService.AddMemberShipAsync(Membership);
+                if (result != null)
+                    TempData["Notification"] = "Successfully";
             }
             else
             {

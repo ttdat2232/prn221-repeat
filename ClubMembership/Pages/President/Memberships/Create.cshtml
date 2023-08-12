@@ -5,8 +5,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>@Model.Club.Name Add new members</h1>
-<span class="text-danger">@TempData["Error"]</span>
+<h1>@Model.Club?.Name Add new members</h1>
 <h4>Membership</h4>
 <hr />
 <div class="row">

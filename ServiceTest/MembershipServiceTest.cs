@@ -108,7 +108,7 @@ namespace ServiceTest
                 Id = id,
                 JoinDate = date,
                 LeaveDate = date,
-                MemberStatus = MemberStatus.LEAVE
+                Status = MemberStatus.LEAVE
             };
             var result = await membershipService.UpdateMembershipAsync(memberToUpdate);
             var updated = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id).ContinueWith(t => t.Result.Values.Single());

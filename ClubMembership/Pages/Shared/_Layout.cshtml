@@ -32,6 +32,8 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <span class="text-danger">@TempData["Error"]</span>
+            <span class="text-success">@TempData["Notification"]</span>
             @RenderBody()
         </main>
     </div>

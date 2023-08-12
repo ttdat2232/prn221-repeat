@@ -13,6 +13,6 @@ namespace Domain.Dtos.Updates
         public DateTime? JoinDate { get; set; }
         public DateTime? LeaveDate { get; set; }
         public MemberRole? Role { get; set; }
-        public MemberStatus? MemberStatus { get; set; }
+        public MemberStatus? Status { get; set; }
     }
 }
