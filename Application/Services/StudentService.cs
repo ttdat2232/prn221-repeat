@@ -1,8 +1,8 @@
 ﻿using Application.Converters;
 using Domain.Dtos;
 using Domain.Entities;
-using Domain.Interfaces;
 using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Services;
 using Domain.Models;
 using System;
 using System.Collections.Generic;

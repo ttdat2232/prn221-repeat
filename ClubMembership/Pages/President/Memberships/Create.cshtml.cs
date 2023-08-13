@@ -10,7 +10,6 @@ using Repository.Models;
 using Domain.Dtos.Creates;
 using Domain.Interfaces.Services;
 using Domain.Dtos;
-using Domain.Interfaces;
 
 namespace ClubMembership.Pages.President.Memberships
 {
@@ -40,7 +39,7 @@ namespace ClubMembership.Pages.President.Memberships
         {
             //TODO : Get Club's ID via logged in user
             ClubId = 7;
-            Club = await clubService.GetClubById(ClubId);
+            Club = await clubService.GetClubByIdAsync(ClubId);
             Students = await studentService.GetAllStudent()
                 .ContinueWith(t => t.Result.Values.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = $"ID: {s.Id} | {s.Name}" }).ToList());
             Roles = Enum.GetValues<MemberRole>().Select(role => new SelectListItem { Value = role.ToString(), Text = role.ToString() }).ToList();

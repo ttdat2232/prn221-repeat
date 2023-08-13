@@ -1,15 +1,25 @@
 using Application.Services;
+using CloudinaryAdapter;
+using CloudinaryDotNet;
 using ClubMembership.Middlewares;
-using Domain.Interfaces;
+using Domain.Interfaces.Adapters;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Repositories.Repository;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+var cloudinaryUri = builder.Configuration.GetSection("Cloudinary:CLOUDINARY_URL") ?? throw new ArgumentException("not find CloudinaryURL schema");
+Cloudinary cloudinary = new Cloudinary(cloudinaryUri.Value);
+cloudinary.Api.Secure = true;
+builder.Services.AddScoped(opts => cloudinary);
+
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IClubService, ClubService>();

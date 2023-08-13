@@ -27,7 +27,7 @@ namespace Application.Converters
                 Role = entity.Role
             };
             if(entity.LeaveDate.HasValue)
-                result.JoinDate = entity.LeaveDate.Value;
+                result.LeaveDate = entity.LeaveDate.Value;
             return result;
         }
 
@@ -65,7 +65,8 @@ namespace Application.Converters
                 LogoUrl = entity.LogoUrl,
                 Name = entity.Name,
                 ClubBoardIds = clubBoards.Select(cb => cb.Id).ToList(),
-                ClubBoards = clubBoards
+                ClubBoards = clubBoards,
+                Memberships = entity.Memberships?.Select(m => ToDto(m)).ToList(),
             };
         }
 
@@ -85,6 +86,15 @@ namespace Application.Converters
             {
                 Id = entity.Id,
                 Name = entity.Name,
+            };
+        }
+
+        public static Club ToEntity(ClubCreateDto dto)
+        {
+            return new Club
+            {
+                CreateAt = DateTime.Now,
+                Name = dto.Name,
             };
         }
     }

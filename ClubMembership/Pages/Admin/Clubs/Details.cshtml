@@ -1,0 +1,74 @@
+﻿@page
+@model ClubMembership.Pages.Admin.Clubs.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Club</h4>
+    <hr />
+    <img src="@Model.Club.LogoUrl" alt="club-logo" style="object-fit: cover; height: 50px; width: 50px" />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Club.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Club.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Club.CreateAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Club.CreateAt)
+        </dd>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Club.LogoUrl)
+        </dd>
+    </dl>
+</div>
+<h2>Boards</h2>
+<table class="table">
+    <thead>
+        <tr></tr>
+    </thead>
+    <tbody>
+        @if (Model.Club.ClubBoards != null)
+        {
+            foreach (var clubBoard in Model.Club.ClubBoards)
+            {
+                <tr>
+                    <td>@clubBoard.Name</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<h2>Memberships(@Model.Club.Memberships?.Count)</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Join Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Club.Memberships != null)
+        {
+            foreach (var member in Model.Club.Memberships)
+            {
+                <tr>
+                    <td>@member.Name</td>
+                    <td>@member.Status</td>
+                    <td>@member.JoinDate</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>

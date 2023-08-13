@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Interfaces
+namespace Domain.Interfaces.Services
 {
     public interface IStudentService
     {

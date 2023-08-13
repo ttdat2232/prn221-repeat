@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoriesTest", "Reposit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{9C85E865-60B5-419D-AC59-4C0E5B220C6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceTest", "ServiceTest\ServiceTest.csproj", "{BFD87EB8-300E-458D-8B99-8658EBC7989E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceTest", "ServiceTest\ServiceTest.csproj", "{BFD87EB8-300E-458D-8B99-8658EBC7989E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudinaryAdapter", "CloudinaryAdapter\CloudinaryAdapter.csproj", "{720D1C43-054E-4D5E-9E0D-C4346130DD74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{BFD87EB8-300E-458D-8B99-8658EBC7989E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFD87EB8-300E-458D-8B99-8658EBC7989E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFD87EB8-300E-458D-8B99-8658EBC7989E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{17A1021E-3A6C-4B65-8808-9E2E381D13DA} = {45BFAC16-D3CC-45DB-B117-AFA246E3A84F}
 		{9C85E865-60B5-419D-AC59-4C0E5B220C6D} = {A3DDB4AF-8EFA-425E-B1FF-F83ED0212A3A}
 		{BFD87EB8-300E-458D-8B99-8658EBC7989E} = {9C85E865-60B5-419D-AC59-4C0E5B220C6D}
+		{720D1C43-054E-4D5E-9E0D-C4346130DD74} = {6901A538-F1F6-49AF-9697-548330358C16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8CF233D7-3E4F-46C2-B983-284708F1ABE7}

@@ -14,5 +14,6 @@ namespace Domain.Dtos
         public string LogoUrl { get; set; } = string.Empty;
         public List<long>? ClubBoardIds { get; set; }
         public List<ClubBoardDto>? ClubBoards { get; set; }
+        public List<MembershipDto>? Memberships { get; set; }
     }
 }
