@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.Repositories.Base;
+﻿using Application.Exceptions;
+using Domain.Interfaces.Repositories.Base;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +18,10 @@ namespace Repositories.Repository.Base
         public Repository(DbContext context)
         {
             this.context = context;
+            if(context.Database.IsInMemory())
+            {
+                context.Database.Migrate();
+            }
         }
 
         public virtual async Task<T> AddAsync(T entity)
@@ -73,6 +78,11 @@ namespace Repositories.Repository.Base
             paginationResult.PageCount = pageIndex + 1;
             paginationResult.PageIndex = pageIndex;
             return paginationResult;
+        }
+
+        public virtual async Task<T> GetById(object id)
+        {
+            return await context.Set<T>().FindAsync(id) ?? throw new NotFoundException(typeof(T), id, GetType());
         }
 
         public virtual T UpdateAsync(T entity)

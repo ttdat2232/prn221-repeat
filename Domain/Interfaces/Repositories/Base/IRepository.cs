@@ -11,6 +11,7 @@ namespace Domain.Interfaces.Repositories.Base
 {
     public interface IRepository<T> where T : class
     {
+        Task<T> GetById(object id);
         Task<PaginationResult<T>> GetAsync(
                 Expression<Func<T, bool>> expression = null,
                 Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,

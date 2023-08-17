@@ -67,17 +67,19 @@ namespace Application.Services
 
         public async Task<ClubDto> GetClubByIdAsync(long id)
         {
-            var result = await unitOfWork.Clubs
-                .GetAsync(expression: c => c.Id == id, pageSize: 1, include: new string[] { nameof(Club.ClubBoards), nameof(Club.Memberships), nameof(Club.ClubActivities) })
-                .ContinueWith(t => t.Result.Values.First() ?? throw new NotFoundException(typeof(Club), id, GetType()));
-            if(result.Memberships != null)
+            try
             {
-                foreach (var member in result.Memberships)
-                {
-                    member.Student = await unitOfWork.Students.GetAsync(expression: s => s.Id == member.StudentId, pageSize: 1).ContinueWith(t => t.Result.Values.Single());
-                }
+                var result = await unitOfWork.Clubs.GetById(id);
+                return AppConverter.ToDto(result);
             }
-            return AppConverter.ToDto(result);
+            catch (KeyNotFoundException) 
+            {
+                throw new NotFoundException(entityNotFound: typeof(Club), id: id, classThrowException: GetType());
+            }
+            catch (Exception)
+            {
+                throw new AppException("Error occurred");
+            }
         }
 
         public async Task<PaginationResult<ClubDto>> GetClubsAsync(int pageSize = 4, int pageIndex = 0)

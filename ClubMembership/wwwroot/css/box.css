@@ -1,0 +1,8 @@
+﻿.custom-box {
+    width: 25vw;
+    height: 25vh;
+    max-height: 100px;
+    max-width: 100px;
+    background-color: rgba(0, 255, 0,0.4);
+    border-radius: 25px
+}

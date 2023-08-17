@@ -1,4 +1,5 @@
-﻿using Domain.Dtos;
+﻿using Application.Exceptions;
+using Domain.Dtos;
 using Domain.Dtos.Creates;
 using Domain.Dtos.Updates;
 using Domain.Entities;
@@ -72,12 +73,15 @@ namespace Application.Converters
 
         public static ClubBoardDto ToDto(ClubBoard entity)
         {
-            return new ClubBoardDto
+            var result = new ClubBoardDto
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                ClubId = entity.ClubId,
+                ClubId = entity.ClubId
             };
+            if (entity.Memberships != null && entity.Memberships.Count > 0)
+                result.MembershipDtos = entity.Memberships.Select(ms => ToDto(ms)).ToList();
+            return result;
         }
 
         public static StudentDto ToDto(Student entity)
@@ -96,6 +100,21 @@ namespace Application.Converters
                 CreateAt = DateTime.Now,
                 Name = dto.Name,
             };
+        }
+
+        public static ClubBoard ToEntity(ClubBoardCreateDto clubBoard)
+        {
+            return new ClubBoard
+            {
+                ClubId = clubBoard.ClubId.HasValue ? clubBoard.ClubId.Value : throw new AppException("ClubId is not valid"),
+                Name = clubBoard.Name,
+            };
+        }
+
+        public static void ToEntity(ClubBoardUpdateDto updateClubBoard, ref ClubBoard entityToUpdate)
+        {
+            entityToUpdate.Id = updateClubBoard.Id;
+            entityToUpdate.ClubId = updateClubBoard.ClubId;
         }
     }
 }

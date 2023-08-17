@@ -1,0 +1,11 @@
+﻿@page
+@model ClubMembership.Pages.President.Clubs.IndexModel
+@{
+    var club = Model.Club ?? default!;
+    ViewData["Title"] = club.Name;
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/box.css"/>
+}
+<h1>@club.Name</h1>
+<img src="@club.LogoUrl" alt="logo" style="object-fit: cover; height: 100px; width: 100px"/>

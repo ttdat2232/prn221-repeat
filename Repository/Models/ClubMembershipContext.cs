@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,10 +28,11 @@ namespace Repository.Models
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if(!isUseInMemories)
+            if (!isUseInMemories)
                 optionsBuilder.UseSqlServer(GetConnectionString());
-            else 
-                optionsBuilder.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString("N"));
+            else
+                optionsBuilder.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString("N"))
+                    .ConfigureWarnings(warmingBuilder => warmingBuilder.Ignore(InMemoryEventId.TransactionIgnoredWarning));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

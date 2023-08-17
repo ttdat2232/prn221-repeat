@@ -25,20 +25,19 @@ namespace ClubMembership.Middlewares
                 logger.LogError(ex.Message);
                 ITempDataDictionaryFactory factory = context.RequestServices.GetService(typeof(ITempDataDictionaryFactory)) as ITempDataDictionaryFactory ?? throw new ArgumentNullException ("Null for type of ITempDataDictionFactory");
                 ITempDataDictionary tempData = factory.GetTempData(context);
-                context.Response.Redirect(context.Request.Path);
                 switch (ex)
                 {
-                    case AppException: 
+                    case AppException:
                         tempData["Error"] = ex.Message;
                         break;
                     case NotFoundException:
                         tempData["Error"] = ex.Message.Substring(ex.Message.IndexOf(":") + 1);
-                        context.Response.Redirect("./");
                         break;
                     default:
                         tempData["Error"] = "Errored occurred";
                         break;
                 }
+                context.Response.Redirect("./");
                 tempData.Save();
             }
         }
