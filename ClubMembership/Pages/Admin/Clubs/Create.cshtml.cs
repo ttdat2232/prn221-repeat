@@ -9,9 +9,11 @@ using Domain.Entities;
 using Repository.Models;
 using Domain.Interfaces.Services;
 using Domain.Dtos.Creates;
+using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.Admin.Clubs
 {
+    [Auth("ADMIN")]
     [BindProperties]
     public class CreateModel : PageModel
     {

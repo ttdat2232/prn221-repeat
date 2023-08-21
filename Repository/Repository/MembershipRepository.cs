@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Exceptions;
+using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Base;
@@ -16,6 +17,17 @@ namespace Repositories.Repository
         {
         }
 
+        public override async Task<Membership> GetById(object id)
+        {
+            var member = context.Set<Membership>().AsNoTracking().Where(m => m.Id == (long)id);
+            var participant = context.Set<Participant>().AsNoTracking().Where(p => p.MembershipId == (long)id).Include(nameof(Participant.ClubActivity));
+            var result = await member.ToListAsync().ContinueWith(t => t.Result.Any() ? t.Result.First() : throw new NotFoundException(typeof(Membership), id, GetType()));
+            await participant.ToListAsync().ContinueWith(t =>
+            {
+                result.ParticipatedActivities = t.Result;
+            });
+            return result;
+        }
         public override async Task<Membership> AddAsync(Membership entity)
         {
             using (var transaction = await context.Database.BeginTransactionAsync())

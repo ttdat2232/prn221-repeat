@@ -29,15 +29,17 @@ namespace ClubMembership.Middlewares
                 {
                     case AppException:
                         tempData["Error"] = ex.Message;
+                        context.Response.Redirect(context.Request.Path);
                         break;
                     case NotFoundException:
                         tempData["Error"] = ex.Message.Substring(ex.Message.IndexOf(":") + 1);
+                        context.Response.Redirect("./");
                         break;
                     default:
                         tempData["Error"] = "Errored occurred";
+                        context.Response.Redirect("/Error");
                         break;
                 }
-                context.Response.Redirect("./");
                 tempData.Save();
             }
         }

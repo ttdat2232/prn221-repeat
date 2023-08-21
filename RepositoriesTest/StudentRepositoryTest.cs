@@ -87,7 +87,7 @@ namespace RepositoriesTest
             var newName = "Test name change";
             studentToUpdate.Name = newName;
             context.ChangeTracker.Clear();
-            var updated = studentRepository.UpdateAsync(studentToUpdate);
+            var updated = studentRepository.Update(studentToUpdate);
             var changes = await context.SaveChangesAsync();
             Assert.That(changes > 0, () => Notification(">1", changes));
         }

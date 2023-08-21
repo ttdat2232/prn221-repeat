@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Exceptions;
+using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Repository.Base;
@@ -23,7 +24,7 @@ namespace Repositories.Repository
             IQueryable<ClubActivity> clubActivities = context.Set<ClubActivity>().AsNoTracking().Where(ca => ca.ClubId == key);
             IQueryable<Membership> members = context.Set<Membership>().AsNoTracking().Where(m => m.ClubId == key).Include(nameof(Membership.Student));
             IQueryable<ClubBoard> clubBoards = context.Set<ClubBoard>().AsNoTracking().Where(cb => cb.ClubId == key);
-            var result = await club.ToListAsync().ContinueWith(t => t.Result.First() ?? throw new KeyNotFoundException());
+            var result = await club.ToListAsync().ContinueWith(t => t.Result.First() ?? throw new NotFoundException(typeof(Club), id, GetType()));
             result.ClubBoards = await clubBoards.ToListAsync();
             result.Memberships = await members.ToListAsync();
             result.ClubActivities = await clubActivities.ToListAsync();

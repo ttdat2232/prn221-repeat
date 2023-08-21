@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceTest", "ServiceTest\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudinaryAdapter", "CloudinaryAdapter\CloudinaryAdapter.csproj", "{720D1C43-054E-4D5E-9E0D-C4346130DD74}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackgroundTask", "BackgroundTask\BackgroundTask.csproj", "{ADAA27D2-E800-4BC4-9703-8D0C7A540038}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{720D1C43-054E-4D5E-9E0D-C4346130DD74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADAA27D2-E800-4BC4-9703-8D0C7A540038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADAA27D2-E800-4BC4-9703-8D0C7A540038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADAA27D2-E800-4BC4-9703-8D0C7A540038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADAA27D2-E800-4BC4-9703-8D0C7A540038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +83,7 @@ Global
 		{9C85E865-60B5-419D-AC59-4C0E5B220C6D} = {A3DDB4AF-8EFA-425E-B1FF-F83ED0212A3A}
 		{BFD87EB8-300E-458D-8B99-8658EBC7989E} = {9C85E865-60B5-419D-AC59-4C0E5B220C6D}
 		{720D1C43-054E-4D5E-9E0D-C4346130DD74} = {6901A538-F1F6-49AF-9697-548330358C16}
+		{ADAA27D2-E800-4BC4-9703-8D0C7A540038} = {13919AF9-C897-4097-ABED-C43C68B570A2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8CF233D7-3E4F-46C2-B983-284708F1ABE7}

@@ -16,5 +16,6 @@ namespace Domain.Interfaces.Services
         Task<ClubBoardDto> GetClubBoardByIdAsync(long id);
         Task<ClubBoardDto> AddClubBoardAsync(ClubBoardCreateDto clubBoard);
         Task<ClubBoardDto> UpdateClubBoardAsync(ClubBoardUpdateDto updateClubBoard);
+        Task DeleteClubBoardByIdAsync(long clubBoardId);
     }
 }

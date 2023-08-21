@@ -67,6 +67,19 @@ namespace Application.Services
             }
         }
 
+        public async Task<PaginationResult<MembershipDto>> GetMembershipByClubIdAsync(long clubId, MemberStatus status = MemberStatus.JOIN)
+        {
+            var result = await unitOfWork.Memberships.GetAsync(expression: m => m.ClubId == clubId, include: new string[] { nameof(Membership.Student), nameof(Membership.Club) });
+            return new PaginationResult<MembershipDto>
+            {
+                PageCount = result.PageCount,
+                PageIndex = result.PageIndex,
+                TotalCount = result.TotalCount,
+                TotalPages = result.TotalPages,
+                Values = result.Values.Select(m => AppConverter.ToDto(m)).ToList(),
+            };
+        }
+
         public async Task<MembershipDto> GetMemberShipByIdAsync(long id, MemberStatus status = MemberStatus.JOIN)
         {
             return await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id && m.Status == status, include: new string[] {nameof(Membership.Student), nameof(Membership.Club)})
@@ -97,7 +110,7 @@ namespace Application.Services
             AppConverter.ToEntity(membership, ref membershipToUpdate);
             try
             {
-                membershipToUpdate = unitOfWork.Memberships.UpdateAsync(membershipToUpdate);
+                membershipToUpdate = unitOfWork.Memberships.Update(membershipToUpdate);
                 return await unitOfWork.CompleteAsync() <= 0 ? throw new AppException("Cannot update") : AppConverter.ToDto(membershipToUpdate);
             }
             catch (Exception)

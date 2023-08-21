@@ -10,9 +10,11 @@ using Repository.Models;
 using Domain.Interfaces.Services;
 using Domain.Dtos;
 using Domain.Models;
+using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
+    [Auth(allowRoles: "PRESIDENT")]
     public class IndexModel : PageModel
     {
         private readonly IMembershipService membershipService;
@@ -27,7 +29,8 @@ namespace ClubMembership.Pages.President.Memberships
 
         public async Task<IActionResult> OnGetAsync()
         {
-            PaginationResult = await membershipService.GetMembershipByNameAsync();
+            long clubId = HttpContext.Session.GetInt32("CLUBID").Value;
+            PaginationResult = await membershipService.GetMembershipByClubIdAsync(clubId);
             Membership = PaginationResult.Values;
             return Page();
         }

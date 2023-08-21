@@ -10,9 +10,11 @@ using Domain.Entities;
 using Repository.Models;
 using Domain.Dtos.Updates;
 using Domain.Interfaces.Services;
+using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
+    [Auth(allowRoles: "PRESIDENT")]
     public class EditModel : PageModel
     {
         private readonly IMembershipService membershipService;

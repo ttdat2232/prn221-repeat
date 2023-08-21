@@ -10,9 +10,11 @@ using Repository.Models;
 using Domain.Dtos.Creates;
 using Domain.Interfaces.Services;
 using Domain.Dtos;
+using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
+    [Auth(allowRoles: "PRESIDENT")]
     public class CreateModel : PageModel
     {
         private readonly IMembershipService membershipService;
@@ -28,7 +30,7 @@ namespace ClubMembership.Pages.President.Memberships
         }
 
         public ClubDto? Club { get; set; }
-        public long ClubId { get; set; }
+        public long clubId { get; set; }
         [BindProperty]
         public MembershipCreateDto Membership { get; set; } = new MembershipCreateDto();
         [BindProperty]
@@ -37,12 +39,11 @@ namespace ClubMembership.Pages.President.Memberships
         public List<SelectListItem>? Roles { get; set; }
         public async Task<IActionResult> OnGet()
         {
-            //TODO : Get Club's ID via logged in user
-            ClubId = 7;
-            Club = await clubService.GetClubByIdAsync(ClubId);
+            clubId = HttpContext.Session.GetInt32("CLUBID").Value;
+            Club = await clubService.GetClubByIdAsync(clubId);
             Students = await studentService.GetAllStudent()
                 .ContinueWith(t => t.Result.Values.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = $"ID: {s.Id} | {s.Name}" }).ToList());
-            Roles = Enum.GetValues<MemberRole>().Select(role => new SelectListItem { Value = role.ToString(), Text = role.ToString() }).ToList();
+            Roles = Enum.GetValues<MemberRole>().Where(r => r != MemberRole.PRESIDENT).Select(role => new SelectListItem { Value = role.ToString(), Text = role.ToString() }).ToList();
             return Page();
         }
 

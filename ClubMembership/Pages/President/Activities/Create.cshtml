@@ -1,0 +1,65 @@
+﻿@page
+@model ClubMembership.Pages.President.Activities.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    var clubId = Model.HttpContext.Session.GetInt32("CLUBID").Value;
+}
+
+<h1>Create</h1>
+
+<h4>ClubActivity</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div hidden="hidden" class="form-group">
+                <input asp-for="ClubActivity.ClubId" value="@clubId"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClubActivity.Name" class="control-label"></label>
+                <input asp-for="ClubActivity.Name" class="form-control" />
+                <span asp-validation-for="ClubActivity.Name" class="text-danger"></span>
+            </div>
+            <div hidden="hidden" class="form-group">
+                <input asp-for="ClubActivity.Status" value="@Domain.Entities.ActivityStatus.UNSTART"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClubActivity.StartAt" class="control-label"></label>
+                <input asp-for="ClubActivity.StartAt" class="form-control" />
+                <span asp-validation-for="ClubActivity.StartAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClubActivity.EndAt" class="control-label"></label>
+                <input asp-for="ClubActivity.EndAt" class="form-control" />
+                <span asp-validation-for="ClubActivity.EndAt" class="text-danger"></span>
+            </div>
+            <div class ="form-group">
+                <label asp-for="Participants" class="control-label select-label"></label>
+                <select asp-for="ClubActivity.ParticipatingMembersIds" multiple="multiple" asp-items="Model.Participants" class="form-select custom-select"></select>
+                <span asp-validation-for="ClubActivity.ParticipatingMembersIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.custom-select').select2();
+        });
+    </script>
+}

@@ -91,7 +91,7 @@ namespace Application.Services
             }
             try
             {
-                var result = unitOfWork.ClubBoards.UpdateAsync(entityToUpdate);
+                var result = unitOfWork.ClubBoards.Update(entityToUpdate);
                 return await unitOfWork.CompleteAsync() > 0 ? AppConverter.ToDto(result) : throw new AppException("Updated failed");
             }
             catch(Exception)

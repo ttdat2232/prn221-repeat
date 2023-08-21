@@ -85,7 +85,7 @@ namespace Repositories.Repository.Base
             return await context.Set<T>().FindAsync(id) ?? throw new NotFoundException(typeof(T), id, GetType());
         }
 
-        public virtual T UpdateAsync(T entity)
+        public virtual T Update(T entity)
         {
             context.ChangeTracker.Clear();
             context.Entry(entity).State = EntityState.Modified;

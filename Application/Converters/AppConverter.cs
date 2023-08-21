@@ -116,5 +116,44 @@ namespace Application.Converters
             entityToUpdate.Id = updateClubBoard.Id;
             entityToUpdate.ClubId = updateClubBoard.ClubId;
         }
+
+        public static ClubActivityDto ToDto(ClubActivity clubActivity)
+        {
+            var result = new ClubActivityDto
+            {
+                Name = clubActivity.Name,
+                Id = clubActivity.Id,
+                EndAt = clubActivity.EndAt,
+                StartAt = clubActivity.StartAt,
+                Status = clubActivity.Status,
+            };
+            if(clubActivity.Participants != null && clubActivity.Participants.Any()) 
+                foreach(var participant in clubActivity.Participants)
+                    result.Participants.Add(ToDto(participant));
+            if(clubActivity.Club != null)
+                result.Club = ToDto(clubActivity.Club);
+            return result;
+        }
+
+        public static ParticipantDto ToDto(Participant participant)
+        {
+            var result = new ParticipantDto() { Status = participant.Status};
+            if (participant.Membership != null)
+                result.Membership = ToDto(participant.Membership);
+            //if(participant.ClubActivity != null)
+            //    result.CLubActivityDto = ToDto(participant.ClubActivity);
+            return result;
+        }
+
+        public static ClubActivity ToEntity(ClubActivityCreateDto createClubActivity)
+        {
+            return new ClubActivity()
+            {
+                EndAt = createClubActivity.EndAt,
+                Name = createClubActivity.Name,
+                StartAt = createClubActivity.StartAt,
+                Status = ActivityStatus.UNSTART,
+            };
+        }
     }
 }

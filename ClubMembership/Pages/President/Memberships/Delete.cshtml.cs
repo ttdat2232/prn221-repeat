@@ -9,9 +9,11 @@ using Domain.Entities;
 using Repository.Models;
 using Domain.Interfaces.Services;
 using Domain.Dtos;
+using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
+    [Auth(allowRoles: "PRESIDENT")]
     public class DeleteModel : PageModel
     {
         private readonly IMembershipService membershipService;

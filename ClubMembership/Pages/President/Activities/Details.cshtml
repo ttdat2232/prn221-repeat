@@ -1,0 +1,93 @@
+﻿@page
+@model ClubMembership.Pages.President.Activities.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div>
+    <h4>ClubActivity</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClubActivity.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClubActivity.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClubActivity.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClubActivity.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClubActivity.StartAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClubActivity.StartAt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClubActivity.EndAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClubActivity.EndAt)
+        </dd>
+    </dl>
+</div>
+<div>
+    <h3>Participants</h3>
+    <form method="post" >
+        <div hidden="hidden" class="form-group">
+            <input asp-for="ActivityId" value="@Model.ActivityId"/>
+        </div>
+        <div class="form-group">
+            <label asp-for="NewMemberId" class="control-label select-label"></label>
+            <select asp-for="NewMemberId" multiple="multiple" asp-items="Model.Members" class="form-select custom-select"></select>
+            <span asp-validation-for="NewMemberId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-page-handler="AddParticipant" type="submit" value="Add Participant" class="btn btn-primary" />
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ClubActivity.Participants[0].Membership.Name)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model.ClubActivity.Participants != null && Model.ClubActivity.Participants.Any())
+            {
+                foreach(var participant in Model.ClubActivity.Participants)
+                {
+                    <tr>
+                        <td>@participant.Membership.Name</td>
+                        <td>
+                            <a class="btn btn-danger" asp-page-handler="DeleteParticipant" asp-route-memberId="@participant.Membership.Id" asp-route-activityId="@Model.ActivityId">Remove</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.ClubActivity?.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.custom-select').select2();
+        });
+    </script>
+}

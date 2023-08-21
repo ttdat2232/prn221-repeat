@@ -9,9 +9,11 @@ using Domain.Entities;
 using Repository.Models;
 using Domain.Dtos;
 using Domain.Interfaces.Services;
+using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.Admin.Clubs
 {
+    [Auth("ADMIN")]
     public class IndexModel : PageModel
     {
         private readonly IClubService clubService;
