@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ClubMembership.Attributes.Auth;
+using Domain.Dtos;
+using Domain.Dtos.Creates;
+using Domain.Entities;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Domain.Entities;
-using Repository.Models;
-using Domain.Dtos.Creates;
-using Domain.Interfaces.Services;
-using Domain.Dtos;
-using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
@@ -41,8 +36,12 @@ namespace ClubMembership.Pages.President.Memberships
         {
             clubId = HttpContext.Session.GetInt32("CLUBID").Value;
             Club = await clubService.GetClubByIdAsync(clubId);
-            Students = await studentService.GetAllStudent()
-                .ContinueWith(t => t.Result.Values.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = $"ID: {s.Id} | {s.Name}" }).ToList());
+            var studentIdInClub = Club.Memberships?.Where(m => m.Status == MemberStatus.JOIN).Select(m => m.StudentId).ToList();
+            await studentService.GetAllStudents()
+                .ContinueWith(t =>
+                {
+                    Students = t.Result.Values.Where(s => studentIdInClub != null && !studentIdInClub.Any(e => e == s.Id)).Select(s => new SelectListItem { Value = s.Id.ToString(), Text = $"ID: {s.Id} | {s.Name}" }).ToList();
+                });
             Roles = Enum.GetValues<MemberRole>().Where(r => r != MemberRole.PRESIDENT).Select(role => new SelectListItem { Value = role.ToString(), Text = role.ToString() }).ToList();
             return Page();
         }
@@ -50,7 +49,7 @@ namespace ClubMembership.Pages.President.Memberships
         public async Task<IActionResult> OnPostAsync()
         {
             Membership.ClubBoardIds = CheckedClubBoards;
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await membershipService.AddMemberShipAsync(Membership);
                 if (result != null)

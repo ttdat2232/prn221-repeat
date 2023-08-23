@@ -19,11 +19,13 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var cloudinaryUri = builder.Configuration.GetSection("Cloudinary:CLOUDINARY_URL") ?? throw new ArgumentException("not find CloudinaryURL schema");
 Cloudinary cloudinary = new Cloudinary(cloudinaryUri.Value);
 cloudinary.Api.Secure = true;
+
 builder.Services.AddScoped(opts => cloudinary);
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IClubActivityService, ClubActivityService>();
+builder.Services.AddScoped<IClubBoardService, ClubBoardService>();
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
-builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IClubService, ClubService>();

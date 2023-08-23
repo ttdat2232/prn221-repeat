@@ -24,9 +24,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Club.CreateAt)
         </dd>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Club.LogoUrl)
-        </dd>
     </dl>
 </div>
 <h2>Boards</h2>
@@ -70,5 +67,5 @@
     </tbody>
 </table>
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="./Index" class="btn btn-primary">Back to List</a>
 </div>

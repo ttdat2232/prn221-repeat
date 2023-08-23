@@ -1,6 +1,5 @@
 ﻿using Application.Exceptions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ClubMembership.Middlewares
 {
@@ -23,7 +22,7 @@ namespace ClubMembership.Middlewares
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                ITempDataDictionaryFactory factory = context.RequestServices.GetService(typeof(ITempDataDictionaryFactory)) as ITempDataDictionaryFactory ?? throw new ArgumentNullException ("Null for type of ITempDataDictionFactory");
+                ITempDataDictionaryFactory factory = context.RequestServices.GetService(typeof(ITempDataDictionaryFactory)) as ITempDataDictionaryFactory ?? throw new ArgumentNullException("Null for type of ITempDataDictionFactory");
                 ITempDataDictionary tempData = factory.GetTempData(context);
                 switch (ex)
                 {

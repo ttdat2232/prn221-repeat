@@ -1,20 +1,14 @@
 using Application.Exceptions;
-using Application.Services;
 using Domain.Dtos.Creates;
 using Domain.Dtos.Updates;
 using Domain.Entities;
-using Domain.Interfaces.Repositories;
-using Domain.Interfaces.Services;
-using Microsoft.VisualBasic;
-using Repositories.Repository;
-using System.Data;
 
 namespace ServiceTest
 {
     [TestFixture]
     public class MembershipServiceTest : BaseSetUp
     {
-        public static object[] NotExistMembers = 
+        public static object[] NotExistMembers =
         {
             new object[] { 1000, MemberStatus.JOIN },
             new object[] { 2, MemberStatus.LEAVE }
@@ -23,7 +17,7 @@ namespace ServiceTest
         [Test]
         public async Task Should_return_true_when_checking_setup()
         {
-            var students = await unitOfWork.Students.GetAsync(isTakeAll: true, include: new string[] {nameof(Student.Grade), nameof(Student.Major)}).ContinueWith(t => t.Result);
+            var students = await unitOfWork.Students.GetAsync(isTakeAll: true, include: new string[] { nameof(Student.Grade), nameof(Student.Major) }).ContinueWith(t => t.Result);
             bool hasGrade = students.Values[0].Grade != null;
             bool hasMajor = students.Values[0].Major != null;
             Assert.Multiple(() =>
@@ -112,7 +106,7 @@ namespace ServiceTest
             };
             var result = await membershipService.UpdateMembershipAsync(memberToUpdate);
             var updated = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id).ContinueWith(t => t.Result.Values.Single());
-            Assert.Multiple(() => 
+            Assert.Multiple(() =>
             {
                 Assert.That(updated.JoinDate == date);
                 Assert.That(updated.LeaveDate == date);

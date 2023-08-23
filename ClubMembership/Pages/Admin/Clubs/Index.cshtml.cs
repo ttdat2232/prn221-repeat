@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Repository.Models;
+﻿using ClubMembership.Attributes.Auth;
 using Domain.Dtos;
 using Domain.Interfaces.Services;
-using ClubMembership.Attributes.Auth;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClubMembership.Pages.Admin.Clubs
 {
@@ -22,7 +14,7 @@ namespace ClubMembership.Pages.Admin.Clubs
             this.clubService = clubService;
         }
 
-        public IList<ClubDto> Club { get;set; } = default!;
+        public IList<ClubDto> Club { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
@@ -30,6 +22,6 @@ namespace ClubMembership.Pages.Admin.Clubs
             {
                 Club = t.Result.Values.ToList();
             });
-        } 
+        }
     }
 }

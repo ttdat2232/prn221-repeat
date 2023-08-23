@@ -2,13 +2,10 @@
 @model ClubMembership.Pages.President.Memberships.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Memberships";
 }
-
-<h1>Index</h1>
-
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create" class="btn btn-primary">Add member</a>
 </p>
 <table class="table">
     <thead>
@@ -38,8 +35,8 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
             </td>
         </tr>
 }

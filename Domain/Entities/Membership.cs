@@ -1,11 +1,4 @@
-﻿using Domain.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
@@ -24,14 +17,14 @@ namespace Domain.Entities
         public virtual ICollection<ClubBoard>? ClubBoards { get; set; }
         public virtual ICollection<Participant>? ParticipatedActivities { get; set; }
         public Membership() { }
-        public Membership(long clubId, long studentId) 
+        public Membership(long clubId, long studentId)
         {
             Id = long.Parse(clubId + "" + studentId);
             ClubId = clubId;
             StudentId = studentId;
         }
     }
-    
+
     public enum MemberStatus
     {
         JOIN = 0,

@@ -4,11 +4,6 @@ using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -21,7 +16,7 @@ namespace Application.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginationResult<StudentDto>> GetAllStudent(StudentStatus status = StudentStatus.IN_PROGRESS)
+        public async Task<PaginationResult<StudentDto>> GetAllStudents(StudentStatus status = StudentStatus.IN_PROGRESS)
         {
             return await unitOfWork.Students.GetAsync(expression: s => s.Status == status, isTakeAll: true)
                 .ContinueWith(t => new PaginationResult<StudentDto>

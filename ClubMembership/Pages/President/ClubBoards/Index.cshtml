@@ -1,0 +1,33 @@
+﻿@page
+@model ClubMembership.Pages.President.ClubBoards.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>ClubBoard</h1>
+<p>
+    <a asp-page="Create" class="btn btn-success">Create Board</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClubBoard[0].Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.ClubBoard) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

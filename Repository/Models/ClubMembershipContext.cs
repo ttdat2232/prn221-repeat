@@ -2,20 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Models
 {
     public class ClubMembershipContext : DbContext
     {
         private bool isUseInMemories = false;
-        public ClubMembershipContext(bool isUseInMemories = false) 
-        { 
+        public ClubMembershipContext(bool isUseInMemories = false)
+        {
             this.isUseInMemories = isUseInMemories;
         }
         private string GetConnectionString()

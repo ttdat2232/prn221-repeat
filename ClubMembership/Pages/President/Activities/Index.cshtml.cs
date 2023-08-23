@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using ClubMembership.Attributes.Auth;
 using Domain.Dtos;
 using Domain.Interfaces.Services;
-using ClubMembership.Attributes.Auth;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClubMembership.Pages.President.Activities
 {
@@ -19,7 +14,7 @@ namespace ClubMembership.Pages.President.Activities
             this.clubActivityService = clubActivityService;
         }
 
-        public IList<ClubActivityDto> ClubActivity { get;set; } = default!;
+        public IList<ClubActivityDto> ClubActivity { get; set; } = default!;
 
         public async Task OnGetAsync()
         {

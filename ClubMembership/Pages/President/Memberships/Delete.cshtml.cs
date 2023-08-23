@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ClubMembership.Attributes.Auth;
+using Domain.Dtos;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Repository.Models;
-using Domain.Interfaces.Services;
-using Domain.Dtos;
-using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
@@ -28,7 +21,7 @@ namespace ClubMembership.Pages.President.Memberships
 
         public async Task<IActionResult> OnGetAsync(long? id)
         {
-            if(!id.HasValue)
+            if (!id.HasValue)
                 return NotFound();
             Membership = await membershipService.GetMemberShipByIdAsync(id.Value);
             return Page();
@@ -36,7 +29,7 @@ namespace ClubMembership.Pages.President.Memberships
 
         public async Task<IActionResult> OnPostAsync(long? id)
         {
-            if(!id.HasValue)
+            if (!id.HasValue)
                 return NotFound();
             await membershipService.DeleteMembershipAsync(id.Value);
             TempData["Notification"] = "Successfully";

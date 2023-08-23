@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ClubMembership.Attributes.Auth;
+using Domain.Dtos.Updates;
+using Domain.Entities;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Repository.Models;
-using Domain.Dtos.Updates;
-using Domain.Interfaces.Services;
-using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.President.Memberships
 {
@@ -45,8 +39,8 @@ namespace ClubMembership.Pages.President.Memberships
                 JoinDate = result.JoinDate,
                 Role = result.Role,
             };
-            Status = Enum.GetValues<MemberStatus>().Select(s => new SelectListItem { Text = s.ToString(), Value = s.ToString(), Selected = s.Equals(Membership.Status)}).ToList();
-            Roles = Enum.GetValues<MemberRole>().Select(r => new SelectListItem { Text = r.ToString(), Value = r.ToString(), Selected = r.Equals(Membership.Role)}).ToList();
+            Status = Enum.GetValues<MemberStatus>().Select(s => new SelectListItem { Text = s.ToString(), Value = s.ToString(), Selected = s.Equals(Membership.Status) }).ToList();
+            Roles = Enum.GetValues<MemberRole>().Select(r => new SelectListItem { Text = r.ToString(), Value = r.ToString(), Selected = r.Equals(Membership.Role) }).ToList();
             return Page();
         }
 

@@ -1,0 +1,65 @@
+﻿@page
+@model ClubMembership.Pages.President.ClubBoards.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div id="clubboard-name">
+    <h1>@Model.ClubBoard.Name</h1>
+</div>
+<h2>Add Member</h2>
+<form method="post" >
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div hidden="hidden" class="form-group">
+            <input asp-for="ClubBoardId" value="@Model.ClubBoardId" />
+        </div>
+        <div class="form-group">
+            <select asp-for="NewMemberId" multiple="multiple" asp-items="Model.Members" class="form-select custom-select"></select>
+            <span asp-validation-for="NewMemberId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-page-handler="AddMembers" type="submit" value="Add" class="btn btn-primary" />
+        </div>
+    </form>
+@if (Model.ClubBoard.MembershipDtos != null && Model.ClubBoard.MembershipDtos.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClubBoard.MembershipDtos[0].Name)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var member in Model.ClubBoard.MembershipDtos)
+            {
+                <tr>
+                    <td>@member.Name</td>
+                    <td><a class="btn btn-danger" asp-page-handler="RemoveMember" asp-route-memberId="@member.Id" asp-route-clubBoardId="@Model.ClubBoardId">Remove</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.ClubBoard?.Id" class="btn btn-primary">Edit</a>
+    <a asp-page="./Index" class="btn btn-primary">Back to List</a>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.custom-select').select2();
+        });
+    </script>
+}

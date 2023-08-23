@@ -1,11 +1,6 @@
 ﻿using Domain.Dtos.Base;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Dtos
 {
@@ -13,6 +8,7 @@ namespace Domain.Dtos
     {
         public string Name { get; set; }
         public long StudentId { get; set; }
+        [Display(Name = "Club Mame")]
         public string ClubName { get; set; }
         public MemberStatus Status { get; set; }
         public DateTime JoinDate { get; set; }

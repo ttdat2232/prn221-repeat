@@ -1,10 +1,5 @@
 ﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Dtos.Creates
 {
@@ -16,6 +11,6 @@ namespace Domain.Dtos.Creates
         public ActivityStatus Status { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
-        public List<long> ParticipatingMembersIds{ get; set; } = new List<long>();
+        public List<long> ParticipatingMembersIds { get; set; } = new List<long>();
     }
 }

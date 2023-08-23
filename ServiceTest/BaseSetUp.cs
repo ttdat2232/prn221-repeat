@@ -2,13 +2,7 @@
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using NUnit.Framework;
 using Repositories.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServiceTest
 {
@@ -32,7 +26,7 @@ namespace ServiceTest
                 new Major { Name  = "SE"},
                 new Major { Name  = "SS"}
             };
-            for(int i= 0; i < majors.Count; i++)
+            for (int i = 0; i < majors.Count; i++)
             {
                 majors[i] = await unitOfWork.Majors.AddAsync(majors[i]);
             }
@@ -45,7 +39,7 @@ namespace ServiceTest
                 Name = "Test",
             });
             var students = new List<Student>();
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 students.Add(new Student
                 {
@@ -56,7 +50,7 @@ namespace ServiceTest
                     GradeId = "K16"
                 });
             }
-            foreach(var student in students)
+            foreach (var student in students)
                 await unitOfWork.Students.AddAsync(student);
             await unitOfWork.Memberships.AddAsync(new Membership(1, 2)
             {

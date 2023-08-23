@@ -3,13 +3,6 @@ using Domain.Dtos;
 using Domain.Dtos.Creates;
 using Domain.Dtos.Updates;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace Application.Converters
 {
@@ -27,7 +20,7 @@ namespace Application.Converters
                 JoinDate = entity.JoinDate,
                 Role = entity.Role
             };
-            if(entity.LeaveDate.HasValue)
+            if (entity.LeaveDate.HasValue)
                 result.LeaveDate = entity.LeaveDate.Value;
             return result;
         }
@@ -55,7 +48,7 @@ namespace Application.Converters
         public static ClubDto ToDto(Club entity)
         {
             var clubBoards = new List<ClubBoardDto>();
-            if(entity.ClubBoards != null && entity.ClubBoards.Count > 0)
+            if (entity.ClubBoards != null && entity.ClubBoards.Count > 0)
             {
                 clubBoards.AddRange(entity.ClubBoards.Select(cb => ToDto(cb)));
             }
@@ -127,17 +120,17 @@ namespace Application.Converters
                 StartAt = clubActivity.StartAt,
                 Status = clubActivity.Status,
             };
-            if(clubActivity.Participants != null && clubActivity.Participants.Any()) 
-                foreach(var participant in clubActivity.Participants)
+            if (clubActivity.Participants != null && clubActivity.Participants.Any())
+                foreach (var participant in clubActivity.Participants)
                     result.Participants.Add(ToDto(participant));
-            if(clubActivity.Club != null)
+            if (clubActivity.Club != null)
                 result.Club = ToDto(clubActivity.Club);
             return result;
         }
 
         public static ParticipantDto ToDto(Participant participant)
         {
-            var result = new ParticipantDto() { Status = participant.Status};
+            var result = new ParticipantDto() { Status = participant.Status };
             if (participant.Membership != null)
                 result.Membership = ToDto(participant.Membership);
             //if(participant.ClubActivity != null)

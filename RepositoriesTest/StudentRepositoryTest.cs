@@ -1,8 +1,6 @@
 using Domain.Entities;
-using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
-using NUnit.Framework;
 using Repositories.Repository;
 using Repository.Models;
 
@@ -16,10 +14,10 @@ namespace RepositoriesTest
         {
             get
             {
-                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS});
-                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS});
-                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS});
-                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS});
+                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS });
+                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS });
+                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS });
+                yield return new TestCaseData(new Student { Birthday = DateTime.Now, GradeId = "K16", Name = $"Name {Guid.NewGuid}", Status = StudentStatus.IN_PROGRESS });
             }
         }
         [SetUp]

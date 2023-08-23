@@ -17,10 +17,13 @@ namespace ClubMembership.Pages.President.Clubs
         }
 
         public ClubDto? Club { get; set; }
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            long clubId = HttpContext.Session.GetInt32("CLUBID").Value;
-            Club = await clubService.GetClubByIdAsync(clubId);
+            long? clubId = HttpContext.Session.GetInt32("CLUBID");
+            if (clubId == null)
+                return NotFound();
+            Club = await clubService.GetClubByIdAsync(clubId.Value);
+            return Page();
         }
     }
 }

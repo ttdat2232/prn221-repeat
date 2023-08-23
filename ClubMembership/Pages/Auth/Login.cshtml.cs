@@ -21,16 +21,19 @@ namespace ClubMembership.Pages.Auth
         public string Password { get; set; } = string.Empty;
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await authenticateService.LoginAsync(Username, Password);  
-            if(user.IsAdmin)
+            var user = await authenticateService.LoginAsync(Username, Password);
+            if (user.IsAdmin)
             {
                 HttpContext.Session.SetString("ROLE", "ADMIN");
+                HttpContext.Session.SetString("CLUBNAME", "ADMIN");
                 return Redirect("/admin/clubs");
             }
             else
             {
                 HttpContext.Session.SetString("ROLE", "PRESIDENT");
                 HttpContext.Session.SetInt32("CLUBID", (int)user.ClubId);
+                HttpContext.Session.SetString("CLUBNAME", user.ClubName);
+                HttpContext.Session.SetString("CLUBLOGO", user.ClubLogo);
                 return Redirect("/president/clubs");
             }
         }

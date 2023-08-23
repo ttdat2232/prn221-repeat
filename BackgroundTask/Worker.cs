@@ -12,7 +12,7 @@ namespace BackgroundTask
         public Worker(ILogger<Worker> logger, IHttpClientFactory httpClientFactory)
         {
             this.logger = logger;
-            httpClient= httpClientFactory.CreateClient();
+            httpClient = httpClientFactory.CreateClient();
             logger.LogInformation(httpClient.ToString());
         }
 

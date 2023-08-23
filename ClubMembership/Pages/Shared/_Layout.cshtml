@@ -1,4 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@{
+    string navbarName = "ClubMembership";
+    string url = "/Index";
+    string logoUrl = "";
+    if (Context.Session.TryGetValue("CLUBNAME", out var nameBytes))
+    {
+        navbarName = System.Text.Encoding.UTF8.GetString(nameBytes);
+        if (navbarName.Equals("ADMIN"))
+            url = "/Admin/Clubs";
+        else
+        {
+            url = "/Presidents/Clubs";
+            if (Context.Session.TryGetValue("CLUBLOGO", out var logoUrlBytes))
+                logoUrl = System.Text.Encoding.UTF8.GetString(logoUrlBytes);
+        }
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,7 +30,15 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">ClubMembership</a>
+                <a class="navbar-brand justify-content-center" asp-area="" asp-page="@url">
+                    @if(logoUrl != "")
+                    {
+                        <div class="d-inline-block w-50">
+                            <img src="@logoUrl" class="d-inline-block w-25" alt="club-logo" />
+                        </div>
+                    }
+                    <span class="d-inline-block" >@navbarName</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,10 +46,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="@url">Clubs</a>
                         </li>
                     </ul>
                 </div>
@@ -37,13 +60,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - ClubMembership - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -7,11 +7,6 @@ using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -23,10 +18,10 @@ namespace Application.Services
         {
             this.unitOfWork = unitOfWork;
         }
-        public async Task<PaginationResult<ClubBoardDto>> GetClubBoardByClubIdAsync(long clubId)
+        public async Task<PaginationResult<ClubBoardDto>> GetClubBoardsByClubIdAsync(long clubId)
         {
             var result = await unitOfWork.ClubBoards
-                .GetAsync(expression: cb => cb.Id == clubId, include: new string[] {nameof(ClubBoard.Memberships)}, isTakeAll: true)
+                .GetAsync(expression: cb => cb.ClubId == clubId, include: new string[] { nameof(ClubBoard.Memberships) }, isTakeAll: true)
                 .ContinueWith(t => t.Result);
             return new PaginationResult<ClubBoardDto>
             {
@@ -39,26 +34,27 @@ namespace Application.Services
         }
         public async Task<ClubBoardDto> GetClubBoardByIdAsync(long id)
         {
-            return await unitOfWork.ClubBoards.GetAsync(expression: cb => cb.Id == id, include: new string[] { nameof(ClubBoard.Memberships), nameof(ClubBoard.Club)})
-                .ContinueWith(t => t.Result.Values.Count <= 0 ? throw new NotFoundException(typeof(ClubBoard), id, GetType()) : AppConverter.ToDto(t.Result.Values.First()));
+            var result = await unitOfWork.ClubBoards.GetById(id);
+            return AppConverter.ToDto(result);
         }
 
         public async Task<ClubBoardDto> AddClubBoardAsync(ClubBoardCreateDto clubBoard)
         {
             var club = await unitOfWork.Clubs.GetAsync(expression: c => c.Id == clubBoard.ClubId)
                 .ContinueWith(t => t.Result.Values.Count <= 0 ? throw new NotFoundException(typeof(Club), clubBoard.ClubId ?? 0, GetType()) : t.Result.Values.First());
-            var existed = await unitOfWork.ClubBoards.GetAsync(expression: cb => cb.Name.ToLower().Equals(clubBoard.Name.ToLower()));
+            var existed = await unitOfWork.ClubBoards.GetAsync(expression: cb => cb.Name.ToLower().Equals(clubBoard.Name.Trim().ToLower()));
             if (existed.Values.Count > 0)
                 throw new AppException($"ClubBoard's name: {clubBoard.Name} is already existed");
             var entityToAdd = AppConverter.ToEntity(clubBoard);
             if (clubBoard.MembershipIds != null && clubBoard.MembershipIds.Count > 0)
             {
                 entityToAdd.Memberships = new List<Membership>();
-                foreach(var memberId in clubBoard.MembershipIds)
+                foreach (var memberId in clubBoard.MembershipIds)
                 {
-                    var member = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == memberId && m.Status == MemberStatus.JOIN)
+                    var member = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == memberId && m.Status == MemberStatus.JOIN, include: new string[] { nameof(Membership.ClubBoards) })
                         .ContinueWith(t => t.Result.Values.Any() ? t.Result.Values.First() : throw new NotFoundException(typeof(Membership), memberId, GetType()));
-                    entityToAdd.Memberships.Add(member);
+                    member.ClubBoards?.Add(entityToAdd);
+                    unitOfWork.Memberships.Update(member);
                 }
             }
             try
@@ -66,9 +62,9 @@ namespace Application.Services
                 entityToAdd = await unitOfWork.ClubBoards.AddAsync(entityToAdd);
                 return await unitOfWork.CompleteAsync() > 0 ? AppConverter.ToDto(entityToAdd) : throw new AppException("Added Failed");
             }
-            catch(Exception)
+            catch (Exception)
             {
-                throw new AppException("Added Failed");
+                throw new AppException("Error occurred");
             }
         }
 
@@ -94,7 +90,7 @@ namespace Application.Services
                 var result = unitOfWork.ClubBoards.Update(entityToUpdate);
                 return await unitOfWork.CompleteAsync() > 0 ? AppConverter.ToDto(result) : throw new AppException("Updated failed");
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new AppException("Updated failed");
             }
@@ -107,10 +103,45 @@ namespace Application.Services
                 if (await unitOfWork.CompleteAsync() <= 0)
                     throw new AppException("Deleted failed");
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new AppException("Deleted failed");
             }
+        }
+
+        public async Task AddMembersToBoard(long id, List<long> newMemberId)
+        {
+            var clubBoard = await unitOfWork.ClubBoards.GetById(id);
+            if (!newMemberId.Any()) return;
+            foreach (var memberId in newMemberId)
+            {
+                var member = await unitOfWork.Memberships.GetAsync(expression: m => m.Id == memberId).ContinueWith(t => t.Result.Values.Any() ? t.Result.Values.First() : throw new NotFoundException(typeof(Membership), memberId, GetType()));
+                clubBoard.Memberships?.Add(member);
+            }
+            try
+            {
+                clubBoard = unitOfWork.ClubBoards.Update(clubBoard);
+                if (await unitOfWork.CompleteAsync() <= 0)
+                    throw new AppException("Adding member failed");
+            }
+            catch (Exception)
+            {
+                throw new AppException("Error Occurred");
+            }
+        }
+
+        public async Task RemoveMemberFromBoard(long memberId, long clubBoardId)
+        {
+            var member = await unitOfWork.Memberships.GetById(memberId);
+            var clubBoard = await unitOfWork.ClubBoards.GetById(clubBoardId);
+            clubBoard.Memberships = clubBoard.Memberships?.Where(m => m.Id != memberId).ToList();
+            try
+            {
+                clubBoard = unitOfWork.ClubBoards.Update(clubBoard);
+                if (await unitOfWork.CompleteAsync() <= 0)
+                    throw new AppException($"Adding member to {clubBoard.Name} failed");
+            }
+            catch (Exception) { throw new AppException("Error occurred"); }
         }
     }
 }

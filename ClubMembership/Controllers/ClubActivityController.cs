@@ -1,5 +1,4 @@
 ﻿using Domain.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -20,7 +19,7 @@ namespace ClubMembership.Controllers
         [HttpGet("Status")]
         public async Task<IActionResult> UpdateAllClubActivitiesStatus()
         {
-            if(!IsLocal())
+            if (!IsLocal())
             {
                 logger.LogInformation("Not local access");
                 return BadRequest();

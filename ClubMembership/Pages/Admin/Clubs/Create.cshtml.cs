@@ -1,46 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ClubMembership.Attributes.Auth;
+using Domain.Dtos.Creates;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Domain.Entities;
-using Repository.Models;
-using Domain.Interfaces.Services;
-using Domain.Dtos.Creates;
-using ClubMembership.Attributes.Auth;
 
 namespace ClubMembership.Pages.Admin.Clubs
 {
     [Auth("ADMIN")]
-    [BindProperties]
     public class CreateModel : PageModel
     {
         private readonly IClubService clubService;
+        private readonly IStudentService studentService;
 
-
-        public CreateModel(IClubService clubService)
+        public CreateModel(IClubService clubService, IStudentService studentService)
         {
             this.clubService = clubService;
+            this.studentService = studentService;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
+            var students = await studentService.GetAllStudents()
+                .ContinueWith(t => t.Result.Values.ToDictionary(k => k.Id, v => $"ID: {v.Id} | {v.Name}"));
+            Students = new SelectList(students, "Key", "Value");
             return Page();
         }
-
+        [BindProperty]
         public ClubCreateDto Club { get; set; } = default!;
-        public IFormFile Image { get; set; }
-
+        [BindProperty]
+        public IFormFile? Image { get; set; }
+        public SelectList Students { get; set; } = default!;
         public async Task<IActionResult> OnPostAsync()
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
-            if(Image != null) 
-            { 
+            if (Image != null)
+            {
                 using (var imageFileStream = Image.OpenReadStream())
                 {
                     Club.Image = new byte[imageFileStream.Length];
@@ -48,12 +46,12 @@ namespace ClubMembership.Pages.Admin.Clubs
                 }
             }
             var result = await clubService.AddClubAsync(Club);
-            if(result != null)
+            if (result != null)
             {
                 TempData["Notification"] = "Successfully";
                 return Redirect("./");
             }
-            else 
+            else
                 return Page();
         }
     }

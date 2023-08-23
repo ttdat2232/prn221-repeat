@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using ClubMembership.Attributes.Auth;
 using Domain.Dtos;
 using Domain.Interfaces.Services;
-using ClubMembership.Attributes.Auth;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClubMembership.Pages.President.Activities
 {
@@ -25,6 +26,7 @@ namespace ClubMembership.Pages.President.Activities
         public SelectList Members { get; set; }
         public ClubActivityDto ClubActivity { get; set; } = default!;
         [BindProperty]
+        [Display(Name = "Member")]
         public List<long>? NewMemberId { get; set; } = new List<long>();
         [BindProperty]
         public long ActivityId { get; set; }
@@ -51,7 +53,7 @@ namespace ClubMembership.Pages.President.Activities
             {
                 return NotFound();
             }
-            if(clubactivity.Club != null &&  clubactivity.Club.Id != HttpContext.Session.GetInt32("CLUBID").Value)
+            if (clubactivity.Club != null && clubactivity.Club.Id != HttpContext.Session.GetInt32("CLUBID").Value)
             {
                 TempData["Error"] = "You are not allowed";
                 return Redirect("/");
@@ -61,8 +63,8 @@ namespace ClubMembership.Pages.President.Activities
 
         public async Task<IActionResult> OnPostAddParticipant()
         {
-            if(NewMemberId != null  && NewMemberId.Any())
-                foreach(var mem in NewMemberId)
+            if (NewMemberId != null && NewMemberId.Any())
+                foreach (var mem in NewMemberId)
                     await participantService.AddParticipantAsync(mem, ActivityId);
             TempData["Notification"] = "Successfully";
             return RedirectToPage("./details", new { id = ActivityId });
@@ -72,7 +74,7 @@ namespace ClubMembership.Pages.President.Activities
         {
             var activity = await clubActivityService.GetClubActivityByIdAsync(activityId);
             var clubId = HttpContext.Session.GetInt32("CLUBID").Value;
-            if(activity.Club != null && clubId != activity.Club.Id)
+            if (activity.Club != null && clubId != activity.Club.Id)
             {
                 TempData["Error"] = "You are not allowed to edit activity of another club";
                 return Redirect("./");

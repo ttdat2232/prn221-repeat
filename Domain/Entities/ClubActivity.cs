@@ -1,9 +1,4 @@
 ﻿using Domain.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
@@ -11,7 +6,7 @@ namespace Domain.Entities
     {
         public long? ClubId { get; set; }
         public string Name { get; set; }
-        public ActivityStatus Status { get; set;}
+        public ActivityStatus Status { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
         public virtual Club? Club { get; set; }

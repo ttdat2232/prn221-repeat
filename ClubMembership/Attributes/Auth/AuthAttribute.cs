@@ -6,7 +6,7 @@ namespace ClubMembership.Attributes.Auth
     {
         public AuthAttribute(string allowRoles) : base(typeof(AuthorizeAction))
         {
-            Arguments = new[] { allowRoles }; 
+            Arguments = new[] { allowRoles };
         }
     }
 }

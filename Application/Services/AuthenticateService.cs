@@ -1,12 +1,8 @@
 ﻿using Application.Exceptions;
 using Domain.Dtos;
+using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -30,12 +26,14 @@ namespace Application.Services
                     UserId = 0,
                     IsAdmin = true,
                 };
-            var membership = await unitOfWork.Memberships.GetAsync(expression: m => m.Student != null && m.Student.Name.ToLower().Equals(username.ToLower()) && m.Role == Domain.Entities.MemberRole.PRESIDENT)
-                .ContinueWith(t => t.Result.Values.Any() ? t.Result.Values.First() :throw new AppException("Wrong username or password"));
+            var membership = await unitOfWork.Memberships.GetAsync(expression: m => m.Student != null && m.Student.Name.ToLower().Equals(username.ToLower()) && m.Role == Domain.Entities.MemberRole.PRESIDENT, include: new string[] { nameof(Membership.Club) })
+                .ContinueWith(t => t.Result.Values.Any() ? t.Result.Values.First() : throw new AppException("Wrong username or password"));
             return new AuthenticateResponse
             {
                 ClubId = membership.ClubId.HasValue ? membership.ClubId.Value : 0,
                 UserId = membership.Id,
+                ClubLogo = membership.Club?.LogoUrl ?? "",
+                ClubName = membership.Club?.Name ?? "",
             };
         }
     }

@@ -1,11 +1,5 @@
-﻿using Domain.Entities.Base;
-using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Domain.Models;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Interfaces.Repositories.Base
 {

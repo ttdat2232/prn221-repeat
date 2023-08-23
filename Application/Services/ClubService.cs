@@ -2,16 +2,12 @@
 using Application.Exceptions;
 using Domain.Dtos;
 using Domain.Dtos.Creates;
+using Domain.Dtos.Updates;
 using Domain.Entities;
 using Domain.Interfaces.Adapters;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -19,11 +15,13 @@ namespace Application.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly ICloudinaryService cloudinaryService;
+        private readonly IMembershipService membershipService;
 
-        public ClubService(IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService)
+        public ClubService(IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService, IMembershipService membershipService)
         {
             this.unitOfWork = unitOfWork;
             this.cloudinaryService = cloudinaryService;
+            this.membershipService = membershipService;
         }
 
         public async Task<ClubDto> AddClubAsync(ClubCreateDto club)
@@ -32,7 +30,8 @@ namespace Application.Services
             if (existed.Values.Count > 0)
                 throw new AppException("Club's name is already existed");
             var entityToAdd = AppConverter.ToEntity(club);
-            if(club.Image != null) 
+            var president = await unitOfWork.Students.GetById(club.PresidentId);
+            if (club.Image != null)
             {
                 var logoURL = await cloudinaryService.UploadAsync(club.Image);
                 entityToAdd.LogoUrl = logoURL;
@@ -41,13 +40,22 @@ namespace Application.Services
             {
                 entityToAdd = await unitOfWork.Clubs.AddAsync(entityToAdd);
                 if (await unitOfWork.CompleteAsync() > 0)
+                {
+                    var presidentMember = new MembershipCreateDto()
+                    {
+                        ClubId = entityToAdd.Id,
+                        Role = MemberRole.PRESIDENT,
+                        StudentId = president.Id,
+                    };
+                    await membershipService.AddMemberShipAsync(presidentMember);
                     return AppConverter.ToDto(entityToAdd);
+                }
                 else
                     throw new AppException("Added failed");
             }
-            catch(Exception) 
+            catch (Exception)
             {
-                throw new AppException("Added failed");
+                throw new AppException("Error occurred");
             }
         }
 
@@ -59,9 +67,9 @@ namespace Application.Services
                 if (await unitOfWork.CompleteAsync() <= 0)
                     throw new AppException("Deleted Failed");
             }
-            catch(Exception)
+            catch (Exception)
             {
-                throw new AppException("Deleted Failed");
+                throw new AppException("Error occurred");
             }
         }
 
@@ -72,7 +80,7 @@ namespace Application.Services
                 var result = await unitOfWork.Clubs.GetById(id);
                 return AppConverter.ToDto(result);
             }
-            catch (KeyNotFoundException) 
+            catch (KeyNotFoundException)
             {
                 throw new NotFoundException(entityNotFound: typeof(Club), id: id, classThrowException: GetType());
             }
@@ -93,6 +101,31 @@ namespace Application.Services
                 TotalPages = result.TotalPages,
                 Values = result.Values.Select(c => AppConverter.ToDto(c)).ToList(),
             };
+        }
+
+        public async Task UpdateClubAsync(ClubUpdateDto club)
+        {
+            var entityToUpdate = await unitOfWork.Clubs.GetAsync(expression: c => c.Id == club.Id)
+                .ContinueWith(t => t.Result.Values.Any() ? t.Result.Values.First() : throw new NotFoundException(typeof(Club), club.Id, GetType()));
+            if (club.Name != null && club.Name.Trim() != string.Empty)
+                entityToUpdate.Name = club.Name;
+            if (club.Image != null)
+            {
+                await cloudinaryService.UploadAsync(club.Image).ContinueWith(t =>
+                {
+                    entityToUpdate.LogoUrl = t.Result;
+                });
+            }
+            try
+            {
+                entityToUpdate = unitOfWork.Clubs.Update(entityToUpdate);
+                if (await unitOfWork.CompleteAsync() <= 0)
+                    throw new AppException("Updated fail");
+            }
+            catch (Exception)
+            {
+                throw new AppException("Error occurred");
+            }
         }
     }
 }

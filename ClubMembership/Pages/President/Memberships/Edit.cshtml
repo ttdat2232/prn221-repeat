@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="Membership.Id" />
             <div class="form-group">
                 <label asp-for="Membership.JoinDate" class="control-label"></label>
-                <input asp-for="Membership.JoinDate" value="@Model.Membership.JoinDate" type="date" class="form-control" />
+                <input asp-for="Membership.JoinDate" value="@Model.Membership.JoinDate.Value" type="date" class="form-control" />
                 <span asp-validation-for="Membership.JoinDate" class="text-danger"></span>
             </div>
             <div hidden="hidden" class="form-group">

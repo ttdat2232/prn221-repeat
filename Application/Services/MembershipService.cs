@@ -7,11 +7,6 @@ using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -26,7 +21,7 @@ namespace Application.Services
 
         public async Task<MembershipDto> AddMemberShipAsync(MembershipCreateDto membership)
         {
-            var student = await unitOfWork.Students.GetAsync(expression: s => s.Id == membership.StudentId && s.Status == StudentStatus.IN_PROGRESS, include: new string[] {nameof(Student.Memberships)})
+            var student = await unitOfWork.Students.GetAsync(expression: s => s.Id == membership.StudentId && s.Status == StudentStatus.IN_PROGRESS, include: new string[] { nameof(Student.Memberships) })
                 .ContinueWith(t => t.Result.Values.Count == 0 ? throw new NotFoundException(typeof(Student), membership.Id, this.GetType()) : t.Result.Values.Single());
             if (student.Memberships != null && student.Memberships.Any(ms => ms.ClubId == membership.ClubId))
                 throw new AppException($"Member is already in this club");
@@ -34,11 +29,11 @@ namespace Application.Services
                 .GetAsync(expression: c => c.Id == membership.ClubId).ContinueWith(t => t.Result.Values.Count == 0 ? throw new NotFoundException(typeof(Club), membership.ClubId, this.GetType()) : t.Result.Values.Single());
             var memberToAdd = AppConverter.ToEntity(membership);
             memberToAdd.ClubBoards = new List<ClubBoard>();
-            if(membership.ClubBoardIds != null && membership.ClubBoardIds.Count > 0)
+            if (membership.ClubBoardIds != null && membership.ClubBoardIds.Count > 0)
             {
-                foreach(var id in membership.ClubBoardIds)
+                foreach (var id in membership.ClubBoardIds)
                 {
-                    var result = await unitOfWork.ClubBoards.GetAsync(expression: p => p.Id == id, include: new string[] {nameof(ClubBoard.Memberships)}, isDisableTracking: false)
+                    var result = await unitOfWork.ClubBoards.GetAsync(expression: p => p.Id == id, include: new string[] { nameof(ClubBoard.Memberships) }, isDisableTracking: false)
                         .ContinueWith(t => t.Result.Values.Count == 0 ? throw new NotFoundException(typeof(ClubBoard), id, this.GetType()) : t.Result.Values.Single());
                     result.Memberships?.Add(memberToAdd);
                 }
@@ -47,7 +42,8 @@ namespace Application.Services
             {
                 memberToAdd = await unitOfWork.Memberships.AddAsync(memberToAdd);
                 return AppConverter.ToDto(memberToAdd);
-            } catch(Exception)
+            }
+            catch (Exception)
             {
                 throw new AppException("Add new membership failed");
             }
@@ -58,10 +54,10 @@ namespace Application.Services
             try
             {
                 await unitOfWork.Memberships.DeleteAsync(id: id);
-                if(await unitOfWork.CompleteAsync() <= 0)
+                if (await unitOfWork.CompleteAsync() <= 0)
                     throw new AppException("Deleted failed");
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new AppException("Deleted failed");
             }
@@ -69,7 +65,7 @@ namespace Application.Services
 
         public async Task<PaginationResult<MembershipDto>> GetMembershipByClubIdAsync(long clubId, MemberStatus status = MemberStatus.JOIN)
         {
-            var result = await unitOfWork.Memberships.GetAsync(expression: m => m.ClubId == clubId, include: new string[] { nameof(Membership.Student), nameof(Membership.Club) });
+            var result = await unitOfWork.Memberships.GetAsync(expression: m => m.ClubId == clubId, include: new string[] { nameof(Membership.Student), nameof(Membership.Club) }, isTakeAll: true);
             return new PaginationResult<MembershipDto>
             {
                 PageCount = result.PageCount,
@@ -82,16 +78,16 @@ namespace Application.Services
 
         public async Task<MembershipDto> GetMemberShipByIdAsync(long id, MemberStatus status = MemberStatus.JOIN)
         {
-            return await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id && m.Status == status, include: new string[] {nameof(Membership.Student), nameof(Membership.Club)})
+            return await unitOfWork.Memberships.GetAsync(expression: m => m.Id == id && m.Status == status, include: new string[] { nameof(Membership.Student), nameof(Membership.Club) })
                 .ContinueWith(t => t.Result.Values.Count > 0 ? AppConverter.ToDto(t.Result.Values.Single()) : throw new NotFoundException(typeof(Membership), id, this.GetType()));
         }
 
         public async Task<PaginationResult<MembershipDto>> GetMembershipByNameAsync(string name = "", MemberStatus status = MemberStatus.JOIN, int pageSize = 4, int pageIndex = 0)
         {
             var result = await unitOfWork.Memberships.GetAsync(
-                expression: m => m.Student.Name.ToLower().Contains(name.ToLower()) && m.Status == status, 
-                pageSize: pageSize, 
-                pageIndex: pageIndex, 
+                expression: m => m.Student.Name.ToLower().Contains(name.ToLower()) && m.Status == status,
+                pageSize: pageSize,
+                pageIndex: pageIndex,
                 include: new string[] { nameof(Membership.Student), nameof(Membership.Club) });
             return new PaginationResult<MembershipDto>
             {
