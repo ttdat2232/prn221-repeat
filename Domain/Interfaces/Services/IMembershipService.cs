@@ -8,7 +8,7 @@ namespace Domain.Interfaces.Services
 {
     public interface IMembershipService
     {
-        Task<PaginationResult<MembershipDto>> GetMembershipByClubIdAsync(long clubId, MemberStatus status = MemberStatus.JOIN);
+        Task<PaginationResult<MembershipDto>> GetMembershipByClubIdAsync(long clubId, int pageIndex = 0, int pageSize = 4, MemberStatus status = MemberStatus.JOIN);
         Task<MembershipDto> GetMemberShipByIdAsync(long id, MemberStatus status = MemberStatus.JOIN);
         Task<PaginationResult<MembershipDto>> GetMembershipByNameAsync(string name = "", MemberStatus status = MemberStatus.JOIN, int pageSize = 4, int pageIndex = 0);
         Task<MembershipDto> AddMemberShipAsync(MembershipCreateDto membership);

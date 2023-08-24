@@ -24,7 +24,7 @@ namespace ClubMembership.Pages.President.Activities
         public async Task<IActionResult> OnGetAsync()
         {
             long clubId = HttpContext.Session.GetInt32("CLUBID").Value;
-            await membershipService.GetMembershipByClubIdAsync(clubId).ContinueWith(t =>
+            await membershipService.GetMembershipByClubIdAsync(clubId, pageSize: 100).ContinueWith(t =>
             {
                 if (t.Result.Values.Any())
                 {

@@ -13,7 +13,7 @@
 
         public static bool IsTimeBetween(DateTime targetStartTime, DateTime targetEndTime, DateTime startTime, DateTime endTime)
         {
-            if (targetStartTime > startTime && targetStartTime < endTime && targetEndTime > startTime && targetEndTime < endTime)
+            if (targetStartTime >= startTime && targetStartTime <= endTime && targetEndTime >= startTime && targetEndTime <= endTime)
                 return true;
             return false;
         }
@@ -23,9 +23,9 @@
             if (IsTimeBetween(targetStartTime, targetEndTime, startTime, endTime))
                 return true;
             if (targetStartTime < startTime)
-                return targetEndTime > startTime && targetEndTime < endTime;
+                return targetEndTime >= startTime && targetEndTime <= endTime;
             if (targetEndTime > endTime)
-                return targetStartTime > startTime && targetStartTime < endTime;
+                return targetStartTime >= startTime && targetStartTime <= endTime;
             return false;
         }
     }

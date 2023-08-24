@@ -10,7 +10,7 @@
             url = "/Admin/Clubs";
         else
         {
-            url = "/Presidents/Clubs";
+            url = "/President/Clubs";
             if (Context.Session.TryGetValue("CLUBLOGO", out var logoUrlBytes))
                 logoUrl = System.Text.Encoding.UTF8.GetString(logoUrlBytes);
         }
@@ -30,11 +30,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand justify-content-center" asp-area="" asp-page="@url">
+                <a class="navbar-brand" href="@url">
                     @if(logoUrl != "")
                     {
-                        <div class="d-inline-block w-50">
-                            <img src="@logoUrl" class="d-inline-block w-25" alt="club-logo" />
+                        <div class="d-inline-block" style="max-width: 100px">
+                            <img src="@logoUrl" class="img-fluid" alt="club-logo" />
                         </div>
                     }
                     <span class="d-inline-block" >@navbarName</span>

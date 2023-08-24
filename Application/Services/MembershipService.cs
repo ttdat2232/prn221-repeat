@@ -63,9 +63,14 @@ namespace Application.Services
             }
         }
 
-        public async Task<PaginationResult<MembershipDto>> GetMembershipByClubIdAsync(long clubId, MemberStatus status = MemberStatus.JOIN)
+        public async Task<PaginationResult<MembershipDto>> GetMembershipByClubIdAsync(long clubId, int pageIndex = 0, int pageSize = 4, MemberStatus status = MemberStatus.JOIN)
         {
-            var result = await unitOfWork.Memberships.GetAsync(expression: m => m.ClubId == clubId, include: new string[] { nameof(Membership.Student), nameof(Membership.Club) }, isTakeAll: true);
+            var result = await unitOfWork.Memberships.GetAsync(
+                expression: m => m.ClubId == clubId,
+                include: new string[] { nameof(Membership.Student), nameof(Membership.Club) },
+                pageSize: pageSize,
+                pageIndex: pageIndex,
+                orderBy: query => query.OrderByDescending(m => m.JoinDate));
             return new PaginationResult<MembershipDto>
             {
                 PageCount = result.PageCount,

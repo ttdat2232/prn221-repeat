@@ -7,7 +7,7 @@ namespace Domain.Interfaces.Services
 {
     public interface IClubBoardService
     {
-        Task<PaginationResult<ClubBoardDto>> GetClubBoardsByClubIdAsync(long clubId);
+        Task<PaginationResult<ClubBoardDto>> GetClubBoardsByClubIdAsync(long clubId, int pageIndex = 0);
         Task<ClubBoardDto> GetClubBoardByIdAsync(long id);
         Task<ClubBoardDto> AddClubBoardAsync(ClubBoardCreateDto clubBoard);
         Task<ClubBoardDto> UpdateClubBoardAsync(ClubBoardUpdateDto updateClubBoard);

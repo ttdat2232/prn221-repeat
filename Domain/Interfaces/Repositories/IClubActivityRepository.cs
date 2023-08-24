@@ -5,5 +5,6 @@ namespace Domain.Interfaces.Repositories
 {
     public interface IClubActivityRepository : IRepository<ClubActivity>
     {
+        Task<List<ClubActivity>> GetClubActivitiesByStudentIdAsync(long id);
     }
 }

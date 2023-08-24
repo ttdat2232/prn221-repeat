@@ -31,3 +31,44 @@
 }
     </tbody>
 </table>
+@{
+    var paginationResult = Model.PaginationResult;
+    var previous = paginationResult.PageIndex == 0 ? 0 : paginationResult.PageIndex - 1;
+    var next = paginationResult.PageIndex == paginationResult.TotalPages - 1 ? paginationResult.TotalPages - 1 : paginationResult.PageIndex + 1;
+}
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (paginationResult.PageIndex == 0)
+        {
+            <li class="page-item disabled"><a class="page-link">Previous</a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" asp-page="Index" asp-route-pageIndex="@previous">Previous</a></li>
+        }
+        @for (int i = 0; i < paginationResult.TotalPages; i++)
+        {
+            int pageCount = i + 1;
+            @if (pageCount == paginationResult.PageCount)
+            {
+                <li class="page-item active">
+                    <a class="page-link" asp-page="Index" asp-route-pageIndex="@i">@pageCount</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="Index" asp-route-pageIndex="@i">@pageCount</a>
+                </li>
+            }
+        }
+        @if (paginationResult.PageIndex == paginationResult.TotalPages - 1)
+        {
+            <li class="page-item disabled"><a class="page-link">Next</a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" asp-page="Index" asp-route-pageIndex="@next">Next</a></li>
+        }
+    </ul>
+</nav>

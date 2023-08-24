@@ -1,6 +1,7 @@
 ﻿using ClubMembership.Attributes.Auth;
 using Domain.Dtos;
 using Domain.Interfaces.Services;
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ClubMembership.Pages.President.ClubBoards
@@ -15,13 +16,14 @@ namespace ClubMembership.Pages.President.ClubBoards
         }
 
         public IList<ClubBoardDto> ClubBoard { get; set; } = default!;
-        public async Task OnGetAsync()
+        public PaginationResult<ClubBoardDto> PaginationResult { get; set; } = default!;
+        public async Task OnGetAsync(int pageIndex = 0)
         {
             long? clubId = HttpContext.Session.GetInt32("CLUBID");
             if (clubId.HasValue)
             {
-                var result = await clubBoardService.GetClubBoardsByClubIdAsync(clubId.Value);
-                ClubBoard = result.Values.ToList();
+                PaginationResult = await clubBoardService.GetClubBoardsByClubIdAsync(clubId.Value);
+                ClubBoard = PaginationResult.Values.ToList();
             }
         }
     }

@@ -18,10 +18,12 @@ namespace Application.Services
         {
             this.unitOfWork = unitOfWork;
         }
-        public async Task<PaginationResult<ClubBoardDto>> GetClubBoardsByClubIdAsync(long clubId)
+        public async Task<PaginationResult<ClubBoardDto>> GetClubBoardsByClubIdAsync(long clubId, int pageIndex = 0)
         {
             var result = await unitOfWork.ClubBoards
-                .GetAsync(expression: cb => cb.ClubId == clubId, include: new string[] { nameof(ClubBoard.Memberships) }, isTakeAll: true)
+                .GetAsync(expression: cb => cb.ClubId == clubId, include: new string[] { nameof(ClubBoard.Memberships) },
+                pageIndex: pageIndex,
+                orderBy: c => c.OrderByDescending(cb => cb.Id))
                 .ContinueWith(t => t.Result);
             return new PaginationResult<ClubBoardDto>
             {

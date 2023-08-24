@@ -20,9 +20,12 @@ namespace Application.Services
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<PaginationResult<ClubActivityDto>> GetAllClubActivitiesByClubIdAsync(long clubId)
+        public async Task<PaginationResult<ClubActivityDto>> GetAllClubActivitiesByClubIdAsync(long clubId, int pageIndex = 0)
         {
-            var activities = await unitOfWork.ClubActivities.GetAsync(expression: ca => ca.ClubId.HasValue && ca.ClubId.Value == clubId);
+            var activities = await unitOfWork.ClubActivities.GetAsync(
+                expression: ca => ca.ClubId.HasValue && ca.ClubId.Value == clubId,
+                pageIndex: pageIndex,
+                orderBy: a => a.OrderByDescending(act => act.StartAt));
             return new PaginationResult<ClubActivityDto>
             {
                 PageCount = activities.PageCount,
@@ -63,18 +66,12 @@ namespace Application.Services
             foreach (var participatingMemberId in createClubActivity.ParticipatingMembersIds)
             {
                 var member = await unitOfWork.Memberships.GetById(participatingMemberId);
-                if (member.ParticipatedActivities != null)
+                var clubActivities = await unitOfWork.ClubActivities.GetClubActivitiesByStudentIdAsync(member.StudentId);
+                foreach (var act in clubActivities)
                 {
-                    foreach (var participated in member.ParticipatedActivities)
+                    if (act.Status != ActivityStatus.END && IsTimeConflict(createClubActivity.StartAt, createClubActivity.EndAt, act.StartAt, act.EndAt))
                     {
-                        if (participated.ClubActivity != null)
-                        {
-                            var act = participated.ClubActivity;
-                            if (act.Status != ActivityStatus.END && IsTimeConflict(createClubActivity.StartAt, createClubActivity.EndAt, act.StartAt, act.EndAt))
-                            {
-                                throw new AppException($"Member was in another activity from {act.StartAt} to {act.EndAt}");
-                            }
-                        }
+                        throw new AppException($"Member with ID: {member.Id} was in another activity from {act.StartAt} to {act.EndAt}");
                     }
                 }
                 entityToAdd.Participants.Add(new Participant
@@ -143,18 +140,12 @@ namespace Application.Services
                     if (existed != null && existed.Any(e => e == memberId))
                         continue;
                     var member = await unitOfWork.Memberships.GetById(memberId);
-                    if (member.ParticipatedActivities != null)
+                    var clubActivities = await unitOfWork.ClubActivities.GetClubActivitiesByStudentIdAsync(member.StudentId);
+                    foreach (var act in clubActivities)
                     {
-                        foreach (var participated in member.ParticipatedActivities)
+                        if (act.Status != ActivityStatus.END && IsTimeConflict(updateActivity.StartAt, updateActivity.EndAt, act.StartAt, act.EndAt))
                         {
-                            if (participated.ClubActivity != null)
-                            {
-                                var act = participated.ClubActivity;
-                                if (act.Status != ActivityStatus.END && (IsTimeBetween(updateActivity.StartAt, act.StartAt, act.EndAt) || IsTimeBetween(updateActivity.EndAt, act.StartAt, act.EndAt)))
-                                {
-                                    throw new AppException($"Member was in another activity from {act.StartAt} to {act.EndAt}");
-                                }
-                            }
+                            throw new AppException($"Member was in another activity from {act.StartAt} to {act.EndAt}");
                         }
                     }
                     clubActivity.Participants?.Add(new Participant
@@ -171,21 +162,16 @@ namespace Application.Services
 
         public async Task DeleteActivityByIdAsync(long id)
         {
+            var result = await unitOfWork.ClubActivities.GetAsync(expression: a => a.Id == id)
+                .ContinueWith(t => t.Result.Values.Any() ? t.Result.Values.First() : throw new NotFoundException(typeof(ClubActivity), id, GetType()));
+            if (result.Status == ActivityStatus.END)
+                throw new AppException("Cannot delete an END activity");
             try
             {
-                var result = await unitOfWork.ClubActivities.GetAsync(expression: a => a.Id == id)
-                    .ContinueWith(t =>
-                    {
-                        if (!t.Result.Values.Any())
-                            throw new NotFoundException(typeof(ClubActivity), id, GetType());
-                        if (t.Result.Values.First().Status == ActivityStatus.END)
-                            throw new AppException("Cannot delete an END activity");
-                        return t.Result.Values.First();
-                    });
+
                 await unitOfWork.ClubActivities.DeleteAsync(id: id);
                 if (await unitOfWork.CompleteAsync() <= 0)
                     throw new AppException("Deleted failed");
-
             }
             catch (Exception)
             {
@@ -195,20 +181,23 @@ namespace Application.Services
 
         public async Task UpdateStatusAllActivityAsync()
         {
-            var activities = await unitOfWork.ClubActivities.GetAsync(isTakeAll: true);
+            var activities = await unitOfWork.ClubActivities.GetAsync(expression: a => a.Status != ActivityStatus.END, isTakeAll: true);
             if (activities.Values.Any())
             {
+
                 try
                 {
                     foreach (var activity in activities.Values)
                     {
-                        if (activity.Status == ActivityStatus.END) continue;
-                        if (activity.StartAt >= DateTime.Now && activity.Status == ActivityStatus.UNSTART)
+                        var startTimeRelation = DateTime.Compare(DateTime.Now, activity.StartAt);
+                        var endTimeRelation = DateTime.Compare(DateTime.Now, activity.EndAt);
+                        if (DateTime.Compare(DateTime.Now, activity.StartAt) >= 0 && activity.Status == ActivityStatus.UNSTART)
                             activity.Status = ActivityStatus.START;
-                        if (activity.EndAt <= DateTime.Now && activity.Status == ActivityStatus.START)
+                        if (DateTime.Compare(DateTime.Now, activity.EndAt) >= 0 && activity.Status == ActivityStatus.START)
                             activity.Status = ActivityStatus.END;
                         unitOfWork.ClubActivities.Update(activity);
                     }
+
                     await unitOfWork.CompleteAsync();
                 }
                 catch (Exception ex)

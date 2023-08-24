@@ -20,10 +20,10 @@ namespace ClubMembership.Pages.President.Memberships
         public IList<MembershipDto> Membership { get; set; } = new List<MembershipDto>();
         public PaginationResult<MembershipDto> PaginationResult { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int pageIndex = 0)
         {
             long clubId = HttpContext.Session.GetInt32("CLUBID").Value;
-            PaginationResult = await membershipService.GetMembershipByClubIdAsync(clubId);
+            PaginationResult = await membershipService.GetMembershipByClubIdAsync(clubId, pageIndex);
             Membership = PaginationResult.Values;
             return Page();
         }

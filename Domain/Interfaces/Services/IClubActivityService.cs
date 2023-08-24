@@ -7,7 +7,7 @@ namespace Domain.Interfaces.Services
 {
     public interface IClubActivityService
     {
-        Task<PaginationResult<ClubActivityDto>> GetAllClubActivitiesByClubIdAsync(long clubId);
+        Task<PaginationResult<ClubActivityDto>> GetAllClubActivitiesByClubIdAsync(long clubId, int pageIndex = 0);
         Task<ClubActivityDto> GetClubActivityByIdAsync(long id);
         Task<ClubActivityDto> AddClubActivityAsync(ClubActivityCreateDto createClubActivity);
         Task<ClubActivityDto> UpdateActivity(ClubActivityUpdateDto update);

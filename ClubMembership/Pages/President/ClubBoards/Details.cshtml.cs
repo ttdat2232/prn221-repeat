@@ -32,7 +32,7 @@ namespace ClubMembership.Pages.President.ClubBoards
             }
             ClubBoardId = id.Value;
             ClubBoard = await clubBoardService.GetClubBoardByIdAsync(id.Value);
-            var members = await membershipService.GetMembershipByClubIdAsync(clubId.Value);
+            var members = await membershipService.GetMembershipByClubIdAsync(clubId.Value, pageSize: 100);
             if (members.Values.Any())
             {
                 if (ClubBoard.MembershipDtos.Any())

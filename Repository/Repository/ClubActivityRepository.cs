@@ -20,5 +20,23 @@ namespace Repositories.Repository
             result.Participants = await participants.ToListAsync();
             return result;
         }
+
+        public async Task<List<ClubActivity>> GetClubActivitiesByStudentIdAsync(long id)
+        {
+            var members = await context.Set<Membership>().AsNoTracking().Include(m => m.ParticipatedActivities).Where(m => m.StudentId == id).ToListAsync();
+            var activities = new List<ClubActivity>();
+            foreach (var member in members)
+            {
+                if (member.ParticipatedActivities != null && member.ParticipatedActivities.Any())
+                {
+                    foreach (var participate in member.ParticipatedActivities)
+                    {
+                        var clubActivities = await context.Set<ClubActivity>().AsNoTracking().Where(a => a.Id == participate.ClubActivityId).ToListAsync();
+                        activities.AddRange(clubActivities);
+                    }
+                }
+            }
+            return activities;
+        }
     }
 }
